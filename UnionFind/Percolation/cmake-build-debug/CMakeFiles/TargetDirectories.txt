@@ -1,0 +1,3 @@
+/Users/livexia/Workshops/code-server/algorithm/UnionFind/Percolation/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/livexia/Workshops/code-server/algorithm/UnionFind/Percolation/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/livexia/Workshops/code-server/algorithm/UnionFind/Percolation/cmake-build-debug/CMakeFiles/Percolation.dir
