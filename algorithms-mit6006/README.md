@@ -6,6 +6,6 @@ MIT Introduction to Algorithms: 6.006
 
 |LEC#|章节|视频内容|练习|
 |---|---|---|---|
-|1|Algorithmic thinking, peak finding|20210402|20210407 基本完成，只能说学习了50%|
+|1|Algorithmic thinking, peak finding|20210402|20210407 50%|
 |2|Models of computation, Python cost model, document distance|20210405|   |
 |   |   |   |   |
