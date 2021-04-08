@@ -8,6 +8,6 @@ MIT Introduction to Algorithms: 6.006
 |---|---|---|---|
 |1|Algorithmic thinking, peak finding|20210402|20210407 50%|
 |2|Models of computation, Python cost model, document distance|20210405|20210407 材料、代码阅读|
-|   |   |   |   |
+|3|Insertion Sort, Merge Sort|20210408|   |
 |   |   |   |   |
 |   |   |   |   |
