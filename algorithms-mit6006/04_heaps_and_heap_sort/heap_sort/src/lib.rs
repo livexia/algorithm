@@ -69,18 +69,35 @@ where
         self.data.swap(a, b)
     }
 
-    fn pop(&mut self) -> Option<T>{
-        self.data.pop()
+    // fn pop(&mut self) -> Option<T>{
+    //     self.data.pop()
+    // }
+
+    // fn sort(&self) -> Vec<T> {
+    //     let mut heap = self.clone();
+    //     let mut result = vec![];
+    //     while !heap.is_empty() {
+    //         let n = heap.len();
+    //         heap.swap(0, n - 1);
+    //         result.push(heap.pop().unwrap());
+    //         heap.max_heapify(0);
+    //     }
+    //     result
+    // }
+
+    fn pop_max(&mut self) -> Option<T>{
+        let n = self.len();
+        self.swap(0, n - 1);
+        let result = self.data.pop();
+        self.max_heapify(0);
+        result
     }
 
     fn sort(&self) -> Vec<T> {
         let mut heap = self.clone();
         let mut result = vec![];
         while !heap.is_empty() {
-            let n = heap.len();
-            heap.swap(0, n - 1);
-            result.push(heap.pop().unwrap());
-            heap.max_heapify(0);
+            result.push(heap.pop_max().unwrap());
         }
         result
     }

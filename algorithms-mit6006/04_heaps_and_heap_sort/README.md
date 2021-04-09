@@ -8,7 +8,7 @@
     1. ADT是什么
     2. 哪些操作
 2. Heap: Priority queue 的一种实现
-    1. An **array** visualized as a **nearly complete binary tree*
+    1. An **array** visualized as a **nearly complete binary tree*，查询资料发现都说是需要完全二叉树？
     2. root = a[0]
     3. parent(i) = a[i / 2]
     4. left(i) = a[2 * i], right(i) = a[2 * i + 1]
