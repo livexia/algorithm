@@ -101,6 +101,20 @@ where
         }
         result
     }
+
+    fn push(&mut self, a: T) {
+        self.data.push(a);
+        let mut cur = self.len() - 1;
+        while cur != 0 {
+            let parent = (cur - 1) / 2;
+            if self.data[cur] > self.data[parent] {
+                self.swap(cur, parent);
+                cur = parent;
+            } else {
+                break;
+            }
+        }
+    }
 }
 
 
@@ -113,7 +127,7 @@ mod tests {
     #[test]
     fn it_works() {
         let a = vec![-5, 10, 20, 1, -10, 14, 12, 9, 78, 0];
-        let heap = MaxHeap::from_vec(&a);
+        let mut heap = MaxHeap::from_vec(&a);
         let result = heap.sort();
         
         let mut a = a;
@@ -121,6 +135,9 @@ mod tests {
         a.reverse();
 
         assert_eq!(result, a);
+
+        heap.push(100);
+        assert_eq!(heap.pop_max().unwrap(), 100);
     }
 
     #[test]
