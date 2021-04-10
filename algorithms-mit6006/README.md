@@ -10,5 +10,5 @@ MIT Introduction to Algorithms: 6.006
 |2|Models of computation, Python cost model, document distance|20210405|20210407 材料、代码阅读|
 |3|Insertion Sort, Merge Sort|20210408|ps2 out|
 |4|Heaps and Heap Sort|20210409|rust implementation|
-|5|Binary search trees, BST sort|   |   |
+|5|Binary search trees, BST sort|20210410|rust implementation|
 |6|AVL trees, AVL sort|   |ps2 due|
