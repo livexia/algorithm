@@ -98,9 +98,24 @@ where
     }
 }
 
+
+fn in_order_traversal<T>(node: &Option<Box<BinarySearchTree<T>>>) -> Vec<T> 
+where
+    T: Clone + Copy
+{
+    let mut result = vec![];
+    if let Some(node) = node {
+        result.extend(in_order_traversal(&node.left));
+        result.push(node.data);
+        result.extend(in_order_traversal(&node.right));
+    } result
+
+}
+
 #[cfg(test)]
 mod tests {
     use crate::BinarySearchTree;
+    use crate::in_order_traversal;
     use std::error::Error;
     use std::result;
 
@@ -120,6 +135,7 @@ mod tests {
         assert!(tree.find(60));
         assert!(tree.find(33));
         assert_eq!(tree.find_min(), 33);
+        assert_eq!(in_order_traversal(&Some(Box::new(tree))), vec![33, 40, 45, 60, 80, 99]);
         Ok(())
     }
 }
