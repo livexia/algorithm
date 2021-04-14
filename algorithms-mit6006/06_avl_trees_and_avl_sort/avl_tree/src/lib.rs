@@ -146,15 +146,70 @@ where
             }
             self.height = self.height.max(self.right.as_ref().unwrap().height + 1)
         }
+        if self.is_right_heavy() {
+            let right = self.right.as_ref().unwrap();
+            if right.is_right_heavy() || right.is_balance() {
+                self = self.left_rotate();
+            } else {
+                let right = self.right.take();
+                self.right = Some(Box::new(right.unwrap().right_rotate()));
+                self = self.left_rotate();
+            }
+            println!("++++++++++++=")
+        }
+        // if self.is_left_heavy() {
+        //     let left = self.left.as_ref().unwrap();
+        //     if left.is_right_heavy() && left.is_balance() {
+        //         self.left_rotate();
+        //     } else {
+        //         left.right_rotate();
+        //         self.left_rotate();
+        //     }
+        //     println!("------------=")
+        // }
         Ok(Some(Box::new(self)))
     }
 
-    fn left_rotate(&mut self) {}
+    fn left_rotate(mut self) -> Node<T> {
+        let mut right = self.right.take().unwrap();
+        let right_left = right.left.take();
+        self.right = right_left;
+        right.left = Some(Box::new(self));
+        *right
+    }
 
-    fn right_rotate(&mut self) {}
+    fn right_rotate(mut self) -> Node<T> {
+        let mut left = self.left.take().unwrap();
+        let left_right = left.right.take();
+        self.left = left_right;
+        left.right = Some(Box::new(self));
+        *left
+    }
 
     fn is_right_heavy(&self) -> bool {
-        true
+        let left_height = Node::get_height(&self.left);
+        let right_height = Node::get_height(&self.right);
+        right_height > left_height + 1
+    }
+
+    fn is_left_heavy(&self) -> bool {
+        let left_height = Node::get_height(&self.left);
+        let right_height = Node::get_height(&self.right);
+        left_height > right_height + 1
+    }
+
+    fn is_balance(&self) -> bool {
+        let left_height = Node::get_height(&self.left);
+        let right_height = Node::get_height(&self.right);
+        (left_height - right_height).abs() <= 1
+    }
+
+    fn get_height(node: &Option<Box<Node<T>>>) -> i32 {
+        if node.is_none() {
+            0
+        } else {
+            node.as_ref().unwrap().height
+        }
     }
 }
 
