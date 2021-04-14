@@ -104,6 +104,9 @@ where
 
     fn push(&mut self, a: T) {
         self.data.push(a);
+        // for i in (0..self.len() / 2).rev() {
+        //     self.max_heapify(i);
+        // }
         let mut cur = self.len() - 1;
         while cur != 0 {
             let parent = (cur - 1) / 2;
@@ -135,7 +138,6 @@ mod tests {
         a.reverse();
 
         assert_eq!(result, a);
-
         heap.push(100);
         assert_eq!(heap.pop_max().unwrap(), 100);
     }
