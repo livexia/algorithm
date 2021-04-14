@@ -10,7 +10,7 @@ AVL Trees
         - suppose x id the lowest node violating AVL
         - assume x.right higher
         - if x.right child is right-heavy or balanced
-            - Left-Rotate(x) 
+            - Left-Rotate(x)
         - else if x'right child is left-heavy or balanced
             - Right-Rotate(x.right)
             - Left-Rotate(x)
@@ -30,19 +30,94 @@ type Result<T> = result::Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
 struct AVLTree<T> {
-    data: T,
-    height: i32,
-    left: Option<Box<AVLTree<T>>>,
-    right: Option<Box<AVLTree<T>>>,
-    // parent: Option<Box<AVLTree<T>>>,
+    root: Option<Box<Node<T>>>,
 }
 
 impl<T> AVLTree<T>
 where
     T: Clone + Copy + PartialEq + Eq + Ord + Debug,
 {
+    fn new() -> Self {
+        AVLTree { root: None }
+    }
+
+    fn is_empty(&self) -> bool {
+        self.root.is_none()
+    }
+
+    fn insert(&mut self, data: T) -> Result<()> {
+        if self.root.is_some() {
+            self.root = self.root.take().unwrap().insert(data)?;
+        } else {
+            self.root = Some(Box::new(Node::new(data)))
+        }
+        Ok(())
+    }
+
+    fn find_min(&self) -> Option<T> {
+        if self.is_empty() {
+            return None;
+        }
+        let mut min = self.root.as_ref().unwrap().data;
+        let mut cur = self.root.as_ref().unwrap();
+        while let Some(node) = &cur.left {
+            min = node.data;
+            cur = &node;
+        }
+        Some(min)
+    }
+
+    fn find(&self, data: T) -> bool {
+        if self.is_empty() {
+            return false;
+        }
+        let mut cur = self.root.as_deref();
+        while let Some(node) = cur {
+            if node.data > data {
+                cur = node.left.as_deref();
+            } else if node.data < data {
+                cur = node.right.as_deref();
+            } else {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn in_order_traversal(&self) -> Vec<T> {
+        if self.is_empty() {
+            vec![]
+        } else {
+            AVLTree::traversal(&self.root)
+        }
+    }
+
+    fn traversal(node: &Option<Box<Node<T>>>) -> Vec<T> {
+        let mut result = vec![];
+        if let Some(node) = node {
+            result.append(&mut AVLTree::traversal(&node.left));
+            result.push(node.data);
+            result.append(&mut AVLTree::traversal(&node.right));
+        }
+        result
+    }
+}
+
+#[derive(Debug)]
+struct Node<T> {
+    data: T,
+    height: i32,
+    left: Option<Box<Node<T>>>,
+    right: Option<Box<Node<T>>>,
+    // parent: Option<Box<AVLTree<T>>>,
+}
+
+impl<T> Node<T>
+where
+    T: Clone + Copy + PartialEq + Eq + Ord + Debug,
+{
     fn new(data: T) -> Self {
-        AVLTree {
+        Node {
             data,
             height: 1,
             left: None,
@@ -51,94 +126,41 @@ where
         }
     }
 
-    fn insert(&mut self, data: T) -> Result<()> {
+    fn insert(mut self, data: T) -> Result<Option<Box<Self>>> {
         if data == self.data {
             return err!("can not insert {:?} into binary search tree", data);
         }
         if data < self.data {
             if self.left.is_none() {
-                self.left = Some(Box::new(AVLTree::new(data)));
+                self.left = Some(Box::new(Node::new(data)));
             } else {
-                self.left.as_mut().unwrap().insert(data)?;
+                self.left = self.left.take().unwrap().insert(data)?
             }
             self.height = self.height.max(self.left.as_ref().unwrap().height + 1)
         }
         if data > self.data {
             if self.right.is_none() {
-                self.right = Some(Box::new(AVLTree::new(data)));
+                self.right = Some(Box::new(Node::new(data)));
             } else {
-                self.right.as_mut().unwrap().insert(data)?;
+                self.right = self.right.take().unwrap().insert(data)?
             }
             self.height = self.height.max(self.right.as_ref().unwrap().height + 1)
         }
-        Ok(())
+        Ok(Some(Box::new(self)))
     }
 
-    fn left_rotate(&mut self) {
-        
-    }
+    fn left_rotate(&mut self) {}
 
-    fn right_rotate(&mut self) {
-        
-    }
+    fn right_rotate(&mut self) {}
 
     fn is_right_heavy(&self) -> bool {
-        let left_height = if let Some(left) = &self.left {
-            left.height
-        } else {
-            0
-        };
-        let right_height = if let Some(right) = &self.right {
-            right.height
-        } else {
-            0
-        };
-        right_height > left_height + 1
+        true
     }
-
-    fn find_min(&self) -> T {
-        let mut min = self.data;
-        let mut cur = self;
-        while let Some(node) = &cur.left {
-            min = node.data;
-            cur = &node;
-        }
-        min
-    }
-
-    fn find(&self, data: T) -> bool {
-        let mut cur = Some(self);
-        while let Some(node) = cur {
-            if node.data > data {
-                cur = node.left.as_deref();
-            } else if node.data < data {
-                cur = node.right.as_deref();
-            } else {
-                return true
-            }
-        }
-        false
-    }
-}
-
-
-fn in_order_traversal<T>(node: &Option<Box<AVLTree<T>>>) -> Vec<T> 
-where
-    T: Clone + Copy
-{
-    let mut result = vec![];
-    if let Some(node) = node {
-        result.append(&mut in_order_traversal(&node.left));
-        result.push(node.data);
-        result.append(&mut in_order_traversal(&node.right));
-    } result
-
 }
 
 #[cfg(test)]
 mod tests {
     use crate::AVLTree;
-    use crate::in_order_traversal;
     use std::error::Error;
     use std::result;
 
@@ -146,20 +168,19 @@ mod tests {
 
     #[test]
     fn it_works() -> Result<()> {
-        let nums: Vec<i32> = (0..3).collect();
+        let nums: Vec<i32> = (0..4).collect();
 
         let mut sorted = nums.clone();
         sorted.sort();
 
-        let mut tree = AVLTree::new(nums[0]);
-        for &i in &nums[1..] {
+        let mut tree = AVLTree::new();
+        for &i in &nums {
             tree.insert(i)?;
         }
-        
+
         println!("{:?}", tree);
 
-        assert_eq!(in_order_traversal(&Some(Box::new(tree))), sorted);
+        assert_eq!(tree.in_order_traversal(), sorted);
         Ok(())
     }
 }
-
