@@ -109,7 +109,6 @@ struct Node<T> {
     height: i32,
     left: Option<Box<Node<T>>>,
     right: Option<Box<Node<T>>>,
-    // parent: Option<Box<AVLTree<T>>>,
 }
 
 impl<T> Node<T>
@@ -122,7 +121,6 @@ where
             height: 1,
             left: None,
             right: None,
-            // parent: None,
         }
     }
 
@@ -136,7 +134,6 @@ where
             } else {
                 self.left = self.left.take().unwrap().insert(data)?
             }
-            self.height = self.height.max(self.left.as_ref().unwrap().height + 1)
         }
         if data > self.data {
             if self.right.is_none() {
@@ -144,37 +141,46 @@ where
             } else {
                 self.right = self.right.take().unwrap().insert(data)?
             }
-            self.height = self.height.max(self.right.as_ref().unwrap().height + 1)
         }
+        self.update_height();
+        if !self.is_avl() {
+            self = self.avlify();
+        }
+        Ok(Some(Box::new(self)))
+    }
+
+    fn avlify(mut self) -> Node<T> {
         if self.is_right_heavy() {
             let right = self.right.as_ref().unwrap();
-            if right.is_right_heavy() || right.is_balance() {
+            if Node::get_height(&right.right) > Node::get_height(&right.left) || right.is_balanced()
+            {
                 self = self.left_rotate();
             } else {
                 let right = self.right.take();
                 self.right = Some(Box::new(right.unwrap().right_rotate()));
                 self = self.left_rotate();
             }
-            println!("++++++++++++=")
         }
-        // if self.is_left_heavy() {
-        //     let left = self.left.as_ref().unwrap();
-        //     if left.is_right_heavy() && left.is_balance() {
-        //         self.left_rotate();
-        //     } else {
-        //         left.right_rotate();
-        //         self.left_rotate();
-        //     }
-        //     println!("------------=")
-        // }
-        Ok(Some(Box::new(self)))
+        if self.is_left_heavy() {
+            let left = self.left.as_ref().unwrap();
+            if Node::get_height(&left.left) > Node::get_height(&left.right) || left.is_balanced() {
+                self = self.right_rotate();
+            } else {
+                let left = self.left.take();
+                self.left = Some(Box::new(left.unwrap().left_rotate()));
+                self = self.right_rotate();
+            }
+        }
+        self
     }
 
     fn left_rotate(mut self) -> Node<T> {
         let mut right = self.right.take().unwrap();
         let right_left = right.left.take();
         self.right = right_left;
+        self.update_height();
         right.left = Some(Box::new(self));
+        right.update_height();
         *right
     }
 
@@ -182,26 +188,34 @@ where
         let mut left = self.left.take().unwrap();
         let left_right = left.right.take();
         self.left = left_right;
+        self.update_height();
         left.right = Some(Box::new(self));
+        left.update_height();
         *left
     }
 
     fn is_right_heavy(&self) -> bool {
         let left_height = Node::get_height(&self.left);
         let right_height = Node::get_height(&self.right);
-        right_height > left_height + 1
+        right_height > left_height
     }
 
     fn is_left_heavy(&self) -> bool {
         let left_height = Node::get_height(&self.left);
         let right_height = Node::get_height(&self.right);
-        left_height > right_height + 1
+        left_height > right_height
     }
 
-    fn is_balance(&self) -> bool {
+    fn is_balanced(&self) -> bool {
         let left_height = Node::get_height(&self.left);
         let right_height = Node::get_height(&self.right);
-        (left_height - right_height).abs() <= 1
+        left_height == right_height
+    }
+
+    fn is_avl(&self) -> bool {
+        let left_height = Node::get_height(&self.left);
+        let right_height = Node::get_height(&self.right);
+        (left_height - right_height).abs() < 2
     }
 
     fn get_height(node: &Option<Box<Node<T>>>) -> i32 {
@@ -211,18 +225,44 @@ where
             node.as_ref().unwrap().height
         }
     }
+
+    fn update_height(&mut self) {
+        let left_height = Node::get_height(&self.left);
+        let right_height = Node::get_height(&self.right);
+        self.height = left_height.max(right_height) + 1;
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::AVLTree;
+    use crate::Node;
+    use rand::{thread_rng, Rng};
     use std::error::Error;
+    use std::fmt::Debug;
     use std::result;
 
     type Result<T> = result::Result<T, Box<dyn Error>>;
 
+    fn is_avl_tree<T>(node: &Node<T>) -> bool
+    where
+        T: Clone + Copy + PartialEq + Eq + Ord + Debug,
+    {
+        if node.left.is_some() {
+            if !is_avl_tree(node.left.as_ref().unwrap()) {
+                return false;
+            }
+        }
+        if node.right.is_some() {
+            if !is_avl_tree(node.right.as_ref().unwrap()) {
+                return false;
+            }
+        }
+        node.is_avl()
+    }
+
     #[test]
-    fn it_works() -> Result<()> {
+    fn test1() -> Result<()> {
         let nums: Vec<i32> = (0..4).collect();
 
         let mut sorted = nums.clone();
@@ -233,9 +273,72 @@ mod tests {
             tree.insert(i)?;
         }
 
-        println!("{:?}", tree);
-
+        assert!(is_avl_tree(tree.root.as_ref().unwrap()));
         assert_eq!(tree.in_order_traversal(), sorted);
+        Ok(())
+    }
+    #[test]
+    fn test2() -> Result<()> {
+        let nums: Vec<i32> = (0..4).rev().collect();
+
+        let mut sorted = nums.clone();
+        sorted.sort();
+
+        let mut tree = AVLTree::new();
+        for &i in &nums {
+            tree.insert(i)?;
+        }
+
+        assert!(is_avl_tree(tree.root.as_ref().unwrap()));
+        assert_eq!(tree.in_order_traversal(), sorted);
+        Ok(())
+    }
+
+    #[test]
+    fn test3() -> Result<()> {
+        let nums = [
+            1817101522,
+            1179914281,
+            -285167116,
+            -748156548,
+            1602561484,
+            1115647986,
+            -756677515,
+            700230789,
+            827992271,
+            -1353954074,
+        ];
+        let nums = nums.to_vec();
+
+        let mut sorted = nums.clone();
+        sorted.sort();
+
+        let mut tree = AVLTree::new();
+        for &i in &nums {
+            tree.insert(i)?;
+        }
+        assert!(is_avl_tree(tree.root.as_ref().unwrap()));
+        assert_eq!(tree.in_order_traversal(), sorted);
+        Ok(())
+    }
+
+    #[test]
+    fn rand_test() -> Result<()> {
+        for _ in 0..100 {
+            let mut nums = [0i32; 1000];
+            thread_rng().fill(&mut nums[..]);
+            let nums = nums.to_vec();
+
+            let mut sorted = nums.clone();
+            sorted.sort();
+
+            let mut tree = AVLTree::new();
+            for &i in &nums {
+                tree.insert(i)?;
+            }
+            assert!(is_avl_tree(tree.root.as_ref().unwrap()));
+            assert_eq!(tree.in_order_traversal(), sorted);
+        }
         Ok(())
     }
 }

@@ -11,4 +11,4 @@ MIT Introduction to Algorithms: 6.006
 |3|Insertion Sort, Merge Sort|20210408|ps2 out|
 |4|Heaps and Heap Sort|20210409|rust implementation|
 |5|Binary search trees, BST sort|20210410|rust implementation|
-|6|AVL trees, AVL sort|   |ps2 due|
+|6|AVL trees, AVL sort|20210410|rust implementation 20210414, ps2 due|
