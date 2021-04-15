@@ -1,4 +1,4 @@
-## 7. Counting Sort, Radix Sort, Lower Bounds for Sorting
+## 8. Hashing with Chaining
 
 时间：20210415
 
