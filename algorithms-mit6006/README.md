@@ -16,4 +16,5 @@ MIT Introduction to Algorithms: 6.006
 |7|Counting sort, radix sort, lower bounds for sorting and searching|20210414|ps2 out|
 |*|ps3: Range queries, digital circuit layout|20210415|tired of writing another avl tree in python|
 |8|Hashing with chaining|20210415|video TODO: rust impl|
-|9|Table Doubling, Karp-Rabin| | |
+|9|Table Doubling, Karp-Rabin|20210415|video TODO: rust impl|
+|*|ps4: 4	Hash functions, Python dictionaries, matching DNA sequences| | |
