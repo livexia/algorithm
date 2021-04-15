@@ -14,5 +14,5 @@ MIT Introduction to Algorithms: 6.006
 |6|AVL trees, AVL sort|20210410|rust implementation 20210414, ps2 due|
 |*|ps2: Fractal rendering, digital circuit simulation|20210414|20210414 python fix|
 |7|Counting sort, radix sort, lower bounds for sorting and searching|20210414|ps2 out|
-|*|ps3: Range queries, digital circuit layout| | |
+|*|ps3: Range queries, digital circuit layout|20210415|tired of writing another avl tree in python|
 |8|Hashing with chaining| | |
