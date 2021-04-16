@@ -17,4 +17,4 @@ MIT Introduction to Algorithms: 6.006
 |ps3|Range queries, digital circuit layout|20210415|tired of writing another avl tree in python|
 |8|Hashing with chaining|20210415|TODO: rust impl|
 |9|Table Doubling, Karp-Rabin|20210415|TODO: rust impl|
-|ps4|Hash functions, Python dictionaries, matching DNA sequences| | |
+|ps4|Hash functions, Python dictionaries, matching DNA sequences|20210416|finish, TODO: rust impl|
