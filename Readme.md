@@ -38,7 +38,7 @@ Step3：完成列表中的所有相关算法的练习，剑指 Offer 中的相�
 
 ### 算法
 
-### 参考：
+### 参考
 
 1. [https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions](https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions)
 2. [https://www.techinterviewhandbook.org/introduction](https://www.techinterviewhandbook.org/introduction)
