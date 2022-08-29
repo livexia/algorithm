@@ -13,5 +13,5 @@ Leetcode Template: https://github.com/aylei/leetcode-rust
 
 ## ToDo
 
-- [ ] Run `cargo run test_{id}` will generate the template
+- [x] Run `cargo run test_{id}` will generate the template
 - [ ] Run `cargo run test_{id}` auto fetech the problem link and description
