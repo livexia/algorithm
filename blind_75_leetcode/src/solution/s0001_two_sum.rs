@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub struct Solution {}
 
 use std::collections::HashMap;
@@ -16,7 +17,7 @@ impl Solution {
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_1 {
     use super::*;
 
     #[test]
