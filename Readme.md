@@ -17,29 +17,11 @@ March 28, 2022 **暂时最好的方式还是针对面试题进行算法的学习
 
 March 28, 2022 确定了针对面试是这个阶段算法学的主要方法，但是材料众多，我需要确定一个主要的材料进行完成。techinterviewhandbook 的链接看似十分丰富，但是页面非常混乱，而且涉及很多的广告内容，所以我还是选择直接利用 leetcode 的列表作为练习列表。后续的学习材料包括，Rust 的算法实现源代码、算法导论英文版、MIT的课程、剑指 Offer 中的相关内容。
 
-### 开始尝试完成 blind-75
+August 29, 2022 开始尝试完成 blind-75
 
-参见 [blind_75_leetcode](./blind_75_leetcode/Readme.md) August 29, 2022
+### 练习记录
 
-### 学习方法
-
-所有的步骤都需要进行详细的记录，包括内容、时间和效果的记录。
-
-Step1：根据 blind-75 的题目规划进行初步练习（3-5题）。
-
-Step2：根据练习效果进行具体算法的学习。
-
-Step3：完成列表中的所有相关算法的练习，剑指 Offer 中的相关练习（可选）。
-
-### 学习材料
-
-1. [https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions](https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions)
-    1. [https://leetcode.com/list/xi4ci4ig/](https://leetcode.com/list/xi4ci4ig/)
-2. https://github.com/TheAlgorithms/Rust
-3. Introduction to Algorithms
-4. [MIT 6.006 Introduction to Algorithms, Spring 2020](https://www.youtube.com/watch?v=ZA-tUyM_y7s&list=PLUl4u3cNGP63EdVPNLG3ToM6LaEUuStEY)
-
-### 算法
+最初这个部分的记录是期望根据具体题目所属类别而进行划分记录，但是最后实践的时候还是统一记录 blind-75 的练习比较好。参见 [blind_75_leetcode](./blind_75_leetcode/Readme.md)
 
 ### 参考
 
