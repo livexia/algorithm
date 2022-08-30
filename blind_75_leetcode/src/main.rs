@@ -79,7 +79,7 @@ fn insert_mod(mod_name: &str) -> Result<()> {
     }
 }
 
-fn parse_name(name: &str) -> std::result::Result<String, String> {
+fn parse_name(name: &str) -> ::std::result::Result<String, String> {
     // replace - with _ with name input
     Ok(name.replace("-", "_"))
 
