@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::io::Write;
 use std::path::Path;
+use std::process::exit;
 
 macro_rules! err {
     ($($tt:tt)*) => { Err(Box::<dyn Error>::from(format!($($tt)*))) }
@@ -18,7 +19,7 @@ struct Args {
     id: String,
 
     /// Problem name
-    #[clap(value_parser)]
+    #[clap(value_parser = parse_name)]
     name: String,
 }
 
@@ -77,4 +78,11 @@ fn insert_mod(mod_name: &str) -> Result<()> {
             e
         ),
     }
+}
+
+fn parse_name(name: &str) -> std::result::Result<String, String> {
+    // replace - with _ with name input
+    Ok(name.replace("-", "_"))
+
+    // ToDo: More Validated
 }
