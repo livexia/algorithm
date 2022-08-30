@@ -2,7 +2,6 @@ use std::error::Error;
 use std::fs;
 use std::io::Write;
 use std::path::Path;
-use std::process::exit;
 
 macro_rules! err {
     ($($tt:tt)*) => { Err(Box::<dyn Error>::from(format!($($tt)*))) }
