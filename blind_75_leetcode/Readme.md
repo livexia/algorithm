@@ -15,3 +15,4 @@ Leetcode Template: https://github.com/aylei/leetcode-rust
 
 - [x] Run `cargo run {id} {name}` will generate the template
 - [ ] auto fetech the problem link and description
+- [ ] Generate a list of completed questions
