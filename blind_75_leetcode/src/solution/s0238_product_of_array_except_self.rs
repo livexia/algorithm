@@ -8,12 +8,10 @@ impl Solution {
         for i in 1..l {
             answer[i] = nums[i - 1] * answer[i - 1]; // calculate prefix product
         }
-        let mut suffix_product = vec![1; l];
-        for i in (0..l - 1).rev() {
-            suffix_product[i] = nums[i + 1] * suffix_product[i + 1]; // calculate suffix product
-        }
-        for i in 0..l {
-            answer[i] *= suffix_product[i];
+        let mut suffix_product = 1;
+        for i in (0..l).rev() {
+            answer[i] *= suffix_product; // calcuate the result
+            suffix_product *= nums[i]; // calculate suffix product
         }
 
         answer
