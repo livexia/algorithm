@@ -10,10 +10,10 @@ impl Solution {
             prefix_sum[i] = prefix_sum[i - 1] + nums[i];
         }
         let mut ans = nums[0];
-        for i in 0..l {
-            for j in 0..=i {
-                ans = ans.max(prefix_sum[i] - prefix_sum[j] + nums[j]);
-            }
+        let mut left = 0;
+        for p in prefix_sum {
+            ans = ans.max(p - left);
+            left = left.min(p);
         }
 
         ans
