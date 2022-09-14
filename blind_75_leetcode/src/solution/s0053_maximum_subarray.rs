@@ -3,14 +3,29 @@ pub struct Solution {}
 
 impl Solution {
     pub fn max_sub_array(nums: Vec<i32>) -> i32 {
-        let mut prefix = 0;
+        // solution from problem 217
+        // let mut prefix = 0;
+        // let mut ans = nums[0];
+        // let mut least_prefix = 0;
+        // for num in nums {
+        //     prefix = prefix + num;
+        //     ans = ans.max(prefix - least_prefix);
+        //     least_prefix = least_prefix.min(prefix);
+        // }
+        // ans
+
+        // with DP
+        // no need for verctor, only need to record the last sum
+        // let mut dp = vec![0; l];
+        // dp[0] = nums[0];
+        let mut dp = nums[0];
         let mut ans = nums[0];
-        let mut least_prefix = 0;
-        for num in nums {
-            prefix = prefix + num;
-            ans = ans.max(prefix - least_prefix);
-            least_prefix = least_prefix.min(prefix);
+        let l = nums.len();
+        for i in 1..l {
+            dp = nums[i].max(dp + nums[i]);
+            ans = ans.max(dp);
         }
+
         ans
     }
 }
