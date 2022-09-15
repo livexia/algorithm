@@ -3,37 +3,14 @@ pub struct Solution {}
 
 impl Solution {
     pub fn max_product(nums: Vec<i32>) -> i32 {
-        let mut prefix_product = vec![1; nums.len()];
-        prefix_product[0] = nums[0];
-        for i in 1..nums.len() {
-            prefix_product[i] = prefix_product[i - 1] * nums[i];
-        }
-        let mut min_minus_prefix_product = 1;
+        let mut dp = (1, 1);
         let mut ans = nums[0];
-        for p in prefix_product {
-            if p < 0 {
-                ans = ans.max(p / min_minus_prefix_product);
-                if min_minus_prefix_product == 1 {
-                    min_minus_prefix_product = p;
-                }
-                min_minus_prefix_product = min_minus_prefix_product.max(p);
-            } else {
-                ans = ans.max(p);
-            }
-        }
-        let mut suffix = 1;
-        min_minus_prefix_product = 1;
-        for num in nums.iter().rev() {
-            suffix = suffix * num;
-            if suffix < 0 {
-                ans = ans.max(suffix / min_minus_prefix_product);
-                if min_minus_prefix_product == 1 {
-                    min_minus_prefix_product = suffix;
-                }
-                min_minus_prefix_product = min_minus_prefix_product.max(suffix);
-            } else {
-                ans = ans.max(suffix);
-            }
+        for num in nums {
+            dp = (
+                num.min(dp.0 * num).min(dp.1 * num),
+                num.max(dp.0 * num).max(dp.1 * num),
+            );
+            ans = ans.max(dp.1);
         }
         ans
     }
