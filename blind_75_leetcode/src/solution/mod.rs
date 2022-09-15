@@ -3,3 +3,4 @@ mod s0121_best_time_to_buy_and_sell_stock;
 mod s0217_contains_duplicate;
 mod s0238_product_of_array_except_self;
 mod s0053_maximum_subarray;
+mod s0153_maximum_product_subarray;
