@@ -56,6 +56,6 @@ mod tests_153 {
         assert_eq!(Solution::max_product(vec![0, 2]), 2);
         assert_eq!(Solution::max_product(vec![-3, 0, 1, -2]), 1);
         assert_eq!(Solution::max_product(vec![0, 1, 0]), 1);
-        assert_eq!(Solution::max_product(vec![2, 3, -1, -2, 4, -5]), 40);
+        assert_eq!(Solution::max_product(vec![2, 3, -1, -2, 4, -5]), 48);
     }
 }
