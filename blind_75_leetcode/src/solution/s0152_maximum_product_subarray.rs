@@ -44,7 +44,7 @@ impl Solution {
 }
 
 #[cfg(test)]
-mod tests_153 {
+mod tests_152 {
     use super::*;
 
     #[test]
