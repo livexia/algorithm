@@ -12,9 +12,15 @@ impl Solution {
             if target == nums[mid] {
                 return mid as i32;
             };
+            if target == nums[left] {
+                return left as i32;
+            };
+            if target == nums[right] {
+                return right as i32;
+            };
             if nums[mid] >= nums[left] {
                 // mid 在左区间
-                if target >= nums[left] && target < nums[mid] {
+                if target > nums[left] && target < nums[mid] {
                     // target 处于 nums[left..mid] 中的时候
                     right = mid - 1;
                 } else {
@@ -22,7 +28,7 @@ impl Solution {
                 }
             } else {
                 // mid 在右区间
-                if target > nums[mid] && target <= nums[right] {
+                if target > nums[mid] && target < nums[right] {
                     // target 处于 nusm[mid..right] 中的时候
                     left = mid + 1;
                 } else {
@@ -50,5 +56,6 @@ mod tests_33 {
         assert_eq!(Solution::search(vec![3, 1], 1), 1);
         assert_eq!(Solution::search(vec![4, 5, 6, 7, 8, 1, 2, 3], 8), 4);
         assert_eq!(Solution::search(vec![5, 1, 3], 3), 2);
+        assert_eq!(Solution::search(vec![5, 1, 3], 1), 1);
     }
 }
