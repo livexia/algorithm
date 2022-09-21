@@ -5,3 +5,4 @@ mod s0152_maximum_product_subarray;
 mod s0217_contains_duplicate;
 mod s0238_product_of_array_except_self;
 mod s0153_find_minimum_in_rotated_sorted_array;
+mod s0033_search_in_rotated_sorted_array;
