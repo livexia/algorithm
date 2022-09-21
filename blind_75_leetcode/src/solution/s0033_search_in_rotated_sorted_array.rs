@@ -7,50 +7,30 @@ impl Solution {
         let mut left = 0;
         let mut right = nums.len() - 1;
 
-        while left < right {
+        while left <= right {
             let mid = (left + right) >> 1;
             if target == nums[mid] {
                 return mid as i32;
             };
-            println!("{} {} {} {}", left, mid, right, target);
-
-            if nums[right] > nums[mid] {
-                // nums[mid..=right] is sorted
-                // nums[left..=mid] is unsorted
-                println!("R {} {} {} {}", left, mid, right, target);
-                if target > nums[right] {
-                    // target maybe in nums[left..=mid]
-                    right = mid;
-                } else if target > nums[mid] {
-                    // target maybe in nums[mid..=right]
-                    left = mid + 1;
+            if nums[mid] >= nums[left] {
+                // mid 在左区间
+                if target >= nums[left] && target < nums[mid] {
+                    // target 处于 nums[left..mid] 中的时候
+                    right = mid - 1;
                 } else {
-                    right = mid;
+                    left = mid + 1;
                 }
             } else {
-                // nums[left..=mid] is sorted
-                // nums[mid..=right] is unsorted
-                println!("L {} {} {} {}", left, mid, right, target);
-                assert!(nums[right] <= nums[mid]);
-                if target <= nums[right] {
-                    // target maybe in nums[mid..=right]
-                    left = mid + 1;
-                    assert!(nums[right] < nums[mid])
-                } else if target > nums[mid] {
-                    // target maybe in nums[mid..=right]
+                // mid 在右区间
+                if target > nums[mid] && target <= nums[right] {
+                    // target 处于 nusm[mid..right] 中的时候
                     left = mid + 1;
                 } else {
-                    right = mid;
+                    right = mid - 1;
                 }
-                println!("AL {} {} {} {}", left, mid, right, target);
             }
         }
-        println!("S {} {} {}", left, right, target);
-        if nums[left] == target {
-            left as i32
-        } else {
-            -1
-        }
+        -1
     }
 }
 
@@ -69,5 +49,6 @@ mod tests_33 {
         assert_eq!(Solution::search(vec![1], 1), 0);
         assert_eq!(Solution::search(vec![3, 1], 1), 1);
         assert_eq!(Solution::search(vec![4, 5, 6, 7, 8, 1, 2, 3], 8), 4);
+        assert_eq!(Solution::search(vec![5, 1, 3], 3), 2);
     }
 }
