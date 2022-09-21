@@ -9,21 +9,48 @@ impl Solution {
 
         while left < right {
             let mid = (left + right) >> 1;
+            if target == nums[mid] {
+                return mid as i32;
+            };
+            println!("{} {} {} {}", left, mid, right, target);
+
             if nums[right] > nums[mid] {
-                right = mid;
+                // nums[mid..=right] is sorted
+                // nums[left..=mid] is unsorted
+                println!("R {} {} {} {}", left, mid, right, target);
+                if target > nums[right] {
+                    // target maybe in nums[left..=mid]
+                    right = mid;
+                } else if target > nums[mid] {
+                    // target maybe in nums[mid..=right]
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
             } else {
-                left = mid + 1;
+                // nums[left..=mid] is sorted
+                // nums[mid..=right] is unsorted
+                println!("L {} {} {} {}", left, mid, right, target);
+                assert!(nums[right] <= nums[mid]);
+                if target <= nums[right] {
+                    // target maybe in nums[mid..=right]
+                    left = mid + 1;
+                    assert!(nums[right] < nums[mid])
+                } else if target > nums[mid] {
+                    // target maybe in nums[mid..=right]
+                    left = mid + 1;
+                } else {
+                    right = mid;
+                }
+                println!("AL {} {} {} {}", left, mid, right, target);
             }
         }
-        match nums[..left].binary_search(&target) {
-            Ok(n) => return n as i32,
-            Err(_) => (),
-        };
-        match nums[left..].binary_search(&target) {
-            Ok(n) => return (n + left) as i32,
-            Err(_) => (),
-        };
-        -1
+        println!("S {} {} {}", left, right, target);
+        if nums[left] == target {
+            left as i32
+        } else {
+            -1
+        }
     }
 }
 
@@ -39,5 +66,8 @@ mod tests_33 {
         assert_eq!(Solution::search(vec![4, 5, 6, 7, 0, 1, 2], 0), 4);
         assert_eq!(Solution::search(vec![5, 1, 3], 5), 0);
         assert_eq!(Solution::search(vec![1, 3], 3), 1);
+        assert_eq!(Solution::search(vec![1], 1), 0);
+        assert_eq!(Solution::search(vec![3, 1], 1), 1);
+        assert_eq!(Solution::search(vec![4, 5, 6, 7, 8, 1, 2, 3], 8), 4);
     }
 }
