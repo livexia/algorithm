@@ -8,3 +8,4 @@ mod s0153_find_minimum_in_rotated_sorted_array;
 mod s0033_search_in_rotated_sorted_array;
 mod s0015_3sum;
 mod s0011_container_with_most_water;
+mod s0371_sum_of_two_integers;
