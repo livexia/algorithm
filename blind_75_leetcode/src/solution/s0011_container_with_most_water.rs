@@ -14,16 +14,21 @@ impl Solution {
                 right -= 1;
             }
         }
+        ans
         // with loop
+        // let mut ans = 0;
+        // let l = height.len();
+        // let mut most_right = l;
         // for left in 0..l {
-        //     for right in (left + 1..l).rev() {
+        //     for right in (left + 1..most_right).rev() {
         //         ans = ans.max((height[right].min(height[left])) * (right - left) as i32);
         //         if height[left] < height[right] {
+        //             most_right = right + 1;
         //             break;
         //         }
         //     }
         // }
-        ans
+        // ans
     }
 }
 
