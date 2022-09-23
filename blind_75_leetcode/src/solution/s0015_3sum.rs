@@ -10,7 +10,7 @@ impl Solution {
         let l = nums.len();
         let mut ans = vec![];
         let mut map = HashMap::new();
-        for i in (0..l).rev() {
+        for i in 0..l {
             map.insert(nums[i], i);
         }
 
@@ -18,11 +18,11 @@ impl Solution {
 
         for i in 0..l {
             let target = nums[i];
-            for j in 0..l {
-                if j == i {
-                    continue;
-                }
+            for j in (i + 1)..l {
                 if let Some(&index) = map.get(&(-target - nums[j])) {
+                    if index < j {
+                        continue;
+                    }
                     if index == i || index == j {
                         continue;
                     }
