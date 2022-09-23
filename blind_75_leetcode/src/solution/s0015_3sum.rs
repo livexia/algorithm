@@ -3,33 +3,33 @@ pub struct Solution {}
 
 impl Solution {
     pub fn three_sum(nums: Vec<i32>) -> Vec<Vec<i32>> {
-        use std::collections::HashMap;
-        use std::collections::HashSet;
         let mut nums = nums;
         nums.sort();
         let l = nums.len();
-        let mut map = HashMap::new();
-        for i in 0..l {
-            map.insert(nums[i], i);
-        }
-
-        let mut ans = HashSet::new();
+        let mut ans = vec![];
 
         for i in 0..l {
+            if i > 0 && nums[i] == nums[i - 1] {
+                continue;
+            }
             let target = nums[i];
+            let mut third = l - 1;
             for j in (i + 1)..l {
-                if let Some(&index) = map.get(&(-target - nums[j])) {
-                    if index <= j {
-                        continue;
-                    }
-                    let res = vec![target, nums[j], -target - nums[j]];
-                    if !ans.insert(res.clone()) {
-                        continue;
-                    }
+                if j > i + 1 && nums[j] == nums[j - 1] {
+                    continue;
+                }
+                while j < third && nums[j] + nums[third] > -target {
+                    third -= 1;
+                }
+                if third == j {
+                    break;
+                }
+                if nums[j] + nums[third] == -target {
+                    ans.push(vec![target, nums[j], nums[third]])
                 }
             }
         }
-        ans.into_iter().collect()
+        ans
     }
 }
 
