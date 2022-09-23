@@ -8,33 +8,28 @@ impl Solution {
         let mut nums = nums;
         nums.sort();
         let l = nums.len();
-        let mut ans = vec![];
         let mut map = HashMap::new();
         for i in 0..l {
             map.insert(nums[i], i);
         }
 
-        let mut shown = HashSet::new();
+        let mut ans = HashSet::new();
 
         for i in 0..l {
             let target = nums[i];
             for j in (i + 1)..l {
                 if let Some(&index) = map.get(&(-target - nums[j])) {
-                    if index < j {
+                    if index <= j {
                         continue;
                     }
-                    if index == i || index == j {
+                    let res = vec![target, nums[j], -target - nums[j]];
+                    if !ans.insert(res.clone()) {
                         continue;
-                    }
-                    let mut res = vec![target, -target - nums[j], nums[j]];
-                    res.sort();
-                    if shown.insert(res.clone()) {
-                        ans.push(res);
                     }
                 }
             }
         }
-        ans
+        ans.into_iter().collect()
     }
 }
 
