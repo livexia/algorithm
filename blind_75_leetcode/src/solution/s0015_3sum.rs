@@ -9,26 +9,27 @@ impl Solution {
         nums.sort();
         let l = nums.len();
         let mut ans = vec![];
+        let mut map = HashMap::new();
+        for i in (0..l).rev() {
+            map.insert(nums[i], i);
+        }
 
         let mut shown = HashSet::new();
 
         for i in 0..l {
-            let mut map = HashMap::new();
             let target = nums[i];
             for j in 0..l {
                 if j == i {
                     continue;
                 }
-                match map.get(&(-target - nums[j])) {
-                    Some(_) => {
-                        let mut res = vec![target, -target - nums[j], nums[j]];
-                        res.sort();
-                        if shown.insert(res.clone()) {
-                            ans.push(res);
-                        }
+                if let Some(&index) = map.get(&(-target - nums[j])) {
+                    if index == i || index == j {
+                        continue;
                     }
-                    None => {
-                        map.insert(nums[j], j);
+                    let mut res = vec![target, -target - nums[j], nums[j]];
+                    res.sort();
+                    if shown.insert(res.clone()) {
+                        ans.push(res);
                     }
                 }
             }
@@ -40,23 +41,26 @@ impl Solution {
 #[cfg(test)]
 mod tests_15 {
     use super::*;
-    fn is_equal(left: &[Vec<i32>], right: &[Vec<i32>]) -> bool {
+    fn assert_equal(left: &[Vec<i32>], right: &[Vec<i32>]) {
         use std::collections::HashSet;
         let left: HashSet<&Vec<i32>> = left.iter().collect();
         let right: HashSet<&Vec<i32>> = right.iter().collect();
-        left == right
+        if left != right {
+            assert_eq!(left, right)
+        }
     }
 
     #[test]
     fn it_works() {
-        assert!(is_equal(
+        assert_equal(
+            &Solution::three_sum(vec![-1, 2, -1]),
+            &vec![vec![-1, -1, 2]],
+        );
+        assert_equal(
             &Solution::three_sum(vec![-1, 0, 1, 2, -1, -4]),
-            &vec![vec![-1, -1, 2], vec![-1, 0, 1]]
-        ));
+            &vec![vec![-1, -1, 2], vec![-1, 0, 1]],
+        );
         assert!(Solution::three_sum(vec![0, 1, 1]).is_empty());
-        assert!(is_equal(
-            &Solution::three_sum(vec![0, 0, 0]),
-            &vec![vec![0, 0, 0]]
-        ));
+        assert_equal(&Solution::three_sum(vec![0, 0, 0]), &vec![vec![0, 0, 0]]);
     }
 }
