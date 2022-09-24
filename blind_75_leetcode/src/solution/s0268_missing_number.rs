@@ -4,11 +4,11 @@ pub struct Solution {}
 impl Solution {
     pub fn missing_number(nums: Vec<i32>) -> i32 {
         let l = nums.len();
-        let mut missing = vec![true; l + 1];
-        for i in nums {
-            missing[i as usize] = false;
+        let mut sum = ((l + 0) * (l + 1) / 2) as i32;
+        for n in nums {
+            sum -= n;
         }
-        missing.into_iter().enumerate().find(|(_, b)| *b).unwrap().0 as i32
+        sum
     }
 }
 
