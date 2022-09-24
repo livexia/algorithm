@@ -3,12 +3,14 @@ pub struct Solution {}
 
 impl Solution {
     pub fn missing_number(nums: Vec<i32>) -> i32 {
-        let l = nums.len();
-        let mut sum = ((l + 0) * (l + 1) / 2) as i32;
-        for n in nums {
-            sum -= n;
-        }
-        sum
+        let mut nums = nums;
+        let n = nums.len();
+        nums.sort();
+        nums.into_iter()
+            .enumerate()
+            .find(|&(i, n)| i as i32 != n)
+            .unwrap_or((n, 0))
+            .0 as i32
     }
 }
 
