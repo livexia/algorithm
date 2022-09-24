@@ -7,8 +7,8 @@ impl Solution {
         let mut count = 0;
         let mut n = n;
         while n != 0 {
-            count += n % 2;
-            n /= 2;
+            count += n & 0b1;
+            n >>= 1;
         }
         count as i32
     }
@@ -32,5 +32,6 @@ mod tests_191 {
             Solution::hammingWeight(0b11111111111111111111111111111101),
             31
         );
+        // assert_eq!(Solution::hammingWeight(-3), 31);
     }
 }
