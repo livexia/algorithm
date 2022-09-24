@@ -3,9 +3,10 @@ pub struct Solution {}
 
 impl Solution {
     pub fn count_bits(n: i32) -> Vec<i32> {
-        let mut bits = vec![0];
+        let mut bits = Vec::with_capacity(n as usize + 1);
+        bits.push(0);
         for i in 1..=n as usize {
-            bits.push(bits[i & (i - 1)] + 1)
+            bits.push(bits[i / 2] + (i & 1) as i32)
         }
         bits
     }
