@@ -17,7 +17,7 @@ struct Args {
     #[clap(value_parser)]
     id: String,
 
-    /// Problem name
+    /// Problem name, could be url or xxx-xxx
     #[clap(value_parser = parse_name)]
     name: String,
 }
@@ -80,6 +80,16 @@ fn insert_mod(mod_name: &str) -> Result<()> {
 }
 
 fn parse_name(name: &str) -> ::std::result::Result<String, String> {
+    // if input is a url, than need to extract the name
+    // remove china url
+    let name = name.replace("https://leetcode.cn/problems/", "");
+    // remove international url
+    let name = name.replace("https://leetcode.com/problems/", "");
+    // remove /
+    let name = name.replace("/", "");
+    // remove whitespace
+    let name = name.trim();
+
     // replace - with _ with name input
     Ok(name.replace("-", "_"))
 
