@@ -5,8 +5,12 @@ impl Solution {
     pub fn count_bits(n: i32) -> Vec<i32> {
         let mut bits = Vec::with_capacity(n as usize + 1);
         bits.push(0);
+        let mut offset = 0;
         for i in 1..=n as usize {
-            bits.push(bits[i / 2] + (i & 1) as i32)
+            if i & (i - 1) == 0 {
+                offset = i;
+            }
+            bits.push(bits[i - offset] + 1);
         }
         bits
     }
