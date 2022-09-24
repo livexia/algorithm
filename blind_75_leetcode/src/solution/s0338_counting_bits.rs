@@ -3,16 +3,11 @@ pub struct Solution {}
 
 impl Solution {
     pub fn count_bits(n: i32) -> Vec<i32> {
-        let mut ans = vec![];
-        for mut i in 0..=n {
-            let mut count = 0;
-            while i != 0 {
-                i &= i - 1;
-                count += 1;
-            }
-            ans.push(count);
+        let mut bits = vec![0];
+        for i in 1..=n as usize {
+            bits.push(bits[i & (i - 1)] + 1)
         }
-        ans
+        bits
     }
 }
 
