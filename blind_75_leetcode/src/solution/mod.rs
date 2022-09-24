@@ -11,3 +11,4 @@ mod s0011_container_with_most_water;
 mod s0371_sum_of_two_integers;
 mod s0191_number_of_1_bits;
 mod s0338_counting_bits;
+mod s0268_missing_number;
