@@ -7,8 +7,8 @@ impl Solution {
         let mut count = 0;
         let mut n = n;
         while n != 0 {
-            count += n & 0b1;
-            n >>= 1;
+            n &= n - 1;
+            count += 1;
         }
         count as i32
     }
