@@ -6,21 +6,27 @@ impl Solution {
         if amount == 0 {
             return 0;
         }
-        let mut sums = vec![(0, 0)];
-        for c in coins {
-            let last_sums = sums.clone();
-            sums = vec![];
-            for (a, count) in &last_sums {
-                for i in 0..=(amount - a) / c {
-                    sums.push((a + i * c, count + i));
+        use std::collections::HashSet;
+        let mut visited = HashSet::new();
+        let mut possible = vec![amount];
+        let mut count = 0;
+        while !possible.is_empty() {
+            let mut new_possible = vec![];
+            while let Some(remain) = possible.pop() {
+                if !visited.insert(remain) || remain < 0 {
+                    continue;
+                }
+                if remain == 0 {
+                    return count;
+                }
+                for c in &coins {
+                    new_possible.push(remain - c);
                 }
             }
+            possible = new_possible;
+            count += 1;
         }
-        sums.into_iter()
-            .filter(|(a, _)| a == &amount)
-            .min_by(|a, b| a.1.cmp(&b.1))
-            .unwrap_or((0, -1))
-            .1
+        -1
     }
 }
 
