@@ -3,18 +3,10 @@ pub struct Solution {}
 
 impl Solution {
     pub fn climb_stairs(n: i32) -> i32 {
-        if n == 1 {
+        if n == 0 || n == 1 {
             return 1;
         }
-        let mut before_last_count = 1;
-        let mut last_count = 1;
-        let n = n as usize;
-        for _ in 2..=n {
-            let temp = last_count;
-            last_count = last_count + before_last_count;
-            before_last_count = temp;
-        }
-        last_count
+        Solution::climb_stairs(n - 1) + Solution::climb_stairs(n - 2)
     }
 }
 
