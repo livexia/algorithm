@@ -3,24 +3,15 @@ pub struct Solution {}
 
 impl Solution {
     pub fn climb_stairs(n: i32) -> i32 {
-        let mut path = vec![];
-        let mut ans = 0;
-        if n == 0 || n == 1 {
+        if n == 1 {
             return 1;
-        } else {
-            path.push(vec![0]);
-            while let Some(last_path) = path.pop() {
-                if let Some(&last_step) = last_path.last() {
-                    if last_step == n {
-                        ans += 1;
-                    } else if last_step < n {
-                        path.push([last_path.clone(), vec![last_step + 1]].concat());
-                        path.push([last_path.clone(), vec![last_step + 2]].concat());
-                    }
-                }
-            }
         }
-        ans
+        let mut dp = vec![1, 1];
+        let n = n as usize;
+        for i in 2..=n {
+            dp.push(dp[i - 1] + dp[i - 2]);
+        }
+        dp[n]
     }
 }
 
