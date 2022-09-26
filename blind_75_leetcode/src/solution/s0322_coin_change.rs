@@ -6,31 +6,21 @@ impl Solution {
         if amount == 0 {
             return 0;
         }
-        let mut coins = coins;
-        coins.sort();
-        let mut path = vec![(amount, 0)];
-        let mut ans = amount / coins[0] + 1;
-
-        while let Some((remain, count)) = path.pop() {
-            if remain == 0 {
-                ans = ans.min(count);
-                break;
-            }
-            if ans <= count + 1 || remain < coins[0] {
-                continue;
-            }
-            for c in &coins {
-                if c > &remain {
-                    break;
+        let mut sums = vec![(0, 0)];
+        for c in coins {
+            let last_sums = sums.clone();
+            sums = vec![];
+            for (a, count) in &last_sums {
+                for i in 0..=(amount - a) / c {
+                    sums.push((a + i * c, count + i));
                 }
-                path.push((remain - c, count + 1));
             }
         }
-        if ans == amount / coins[0] + 1 {
-            -1
-        } else {
-            ans
-        }
+        sums.into_iter()
+            .filter(|(a, _)| a == &amount)
+            .min_by(|a, b| a.1.cmp(&b.1))
+            .unwrap_or((0, -1))
+            .1
     }
 }
 
@@ -47,5 +37,6 @@ mod tests_322 {
         assert_eq!(Solution::coin_change(vec![4, 3, 2, 8], 9), 3);
         assert_eq!(Solution::coin_change(vec![4, 3, 2, 8], 10), 2);
         assert_eq!(Solution::coin_change(vec![186, 419, 83, 408], 6249), 20);
+        assert_eq!(Solution::coin_change(vec![3, 7, 405, 436], 8839), 25);
     }
 }
