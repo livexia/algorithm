@@ -7,25 +7,36 @@ impl Solution {
             return 0;
         }
 
-        let mut dp = vec![nums[0]];
+        let mut tail = vec![nums[0]];
 
         for i in 1..nums.len() {
-            for count in (0..dp.len()).rev() {
-                if dp[count] >= nums[i] {
-                    if count == 0 {
-                        dp[count] = dp[count].min(nums[i])
-                    }
-                } else {
-                    if count == dp.len() - 1 {
-                        dp.push(nums[i]);
-                    } else {
-                        dp[count + 1] = dp[count + 1].min(nums[i])
-                    }
-                    break;
+            if &nums[i] > tail.last().unwrap() {
+                tail.push(nums[i])
+            } else {
+                match Solution::binary_search(&tail, &nums[i]) {
+                    // match tail.binary_search(&nums[i]) {
+                    Ok(_) => (),
+                    Err(j) => tail[j] = nums[i],
                 }
             }
         }
-        dp.len() as i32
+        tail.len() as i32
+    }
+
+    fn binary_search(v: &[i32], x: &i32) -> Result<usize, usize> {
+        let mut left = 0;
+        let mut right = v.len() - 1;
+        while left < right {
+            let mid = (left + right) >> 1;
+            if x == &v[mid] {
+                return Ok(mid);
+            } else if x < &v[mid] {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        Err(left)
     }
 }
 
