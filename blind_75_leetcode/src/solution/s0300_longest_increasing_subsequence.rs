@@ -3,17 +3,16 @@ pub struct Solution {}
 
 impl Solution {
     pub fn length_of_lis(nums: Vec<i32>) -> i32 {
-        let mut dp = 1;
-        let mut ans = 0;
+        let mut dp = vec![1; nums.len()];
+
         for i in 1..nums.len() {
-            if nums[i] > nums[i - 1] {
-                dp = dp + 1;
-            } else {
-                dp = 1;
+            for j in 0..i {
+                if nums[i] > nums[j] {
+                    dp[i] = dp[i].max(dp[j] + 1);
+                }
             }
-            ans = ans.max(dp);
         }
-        ans
+        dp.into_iter().max().unwrap_or(0)
     }
 }
 
