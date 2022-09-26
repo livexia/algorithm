@@ -6,27 +6,29 @@ impl Solution {
         if amount == 0 {
             return 0;
         }
-        use std::collections::HashSet;
-        let mut visited = HashSet::new();
-        let mut possible = vec![amount];
-        let mut count = 0;
-        while !possible.is_empty() {
-            let mut new_possible = vec![];
-            while let Some(remain) = possible.pop() {
-                if !visited.insert(remain) || remain < 0 {
-                    continue;
-                }
-                if remain == 0 {
-                    return count;
-                }
-                for c in &coins {
-                    new_possible.push(remain - c);
-                }
-            }
-            possible = new_possible;
-            count += 1;
+        let mut visited = vec![0; amount as usize + 1];
+        Solution::dp(&coins, amount, &mut visited)
+    }
+
+    fn dp(coins: &[i32], remain: i32, visited: &mut [i32]) -> i32 {
+        if remain < 0 {
+            return -1;
         }
-        -1
+        if remain == 0 {
+            return 0;
+        }
+        if visited[remain as usize] != 0 {
+            return visited[remain as usize];
+        }
+        let mut min = -1;
+        for c in coins {
+            let res = Solution::dp(coins, remain - c, visited);
+            if (res >= 0 && res + 1 < min) || (res >= 0 && min == -1) {
+                min = res + 1;
+            }
+        }
+        visited[remain as usize] = min;
+        visited[remain as usize]
     }
 }
 
