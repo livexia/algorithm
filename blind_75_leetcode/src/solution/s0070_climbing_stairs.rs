@@ -6,12 +6,15 @@ impl Solution {
         if n == 1 {
             return 1;
         }
-        let mut dp = vec![1, 1];
+        let mut before_last_count = 1;
+        let mut last_count = 1;
         let n = n as usize;
-        for i in 2..=n {
-            dp.push(dp[i - 1] + dp[i - 2]);
+        for _ in 2..=n {
+            let temp = last_count;
+            last_count = last_count + before_last_count;
+            before_last_count = temp;
         }
-        dp[n]
+        last_count
     }
 }
 
@@ -24,5 +27,6 @@ mod tests_70 {
         assert_eq!(Solution::climb_stairs(2), 2);
         assert_eq!(Solution::climb_stairs(3), 3);
         assert_eq!(Solution::climb_stairs(4), 5);
+        assert_eq!(Solution::climb_stairs(44), 1134903170);
     }
 }
