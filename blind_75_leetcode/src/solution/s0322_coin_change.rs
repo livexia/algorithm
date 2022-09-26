@@ -6,8 +6,27 @@ impl Solution {
         if amount == 0 {
             return 0;
         }
-        let mut visited = vec![0; amount as usize + 1];
-        Solution::dp(&coins, amount, &mut visited)
+        let amount = amount as usize;
+        let mut dp = vec![amount + 1; amount as usize + 1];
+        dp[0] = 0;
+        for i in 0..=amount {
+            for &c in &coins {
+                if c as usize <= i {
+                    dp[i] = dp[i].min(dp[i - c as usize] + 1)
+                }
+            }
+        }
+        if dp[amount] == amount + 1 {
+            -1
+        } else {
+            dp[amount] as i32
+        }
+        // Top Down DP with memorization
+        // if amount == 0 {
+        //     return 0;
+        // }
+        // let mut visited = vec![0; amount as usize + 1];
+        // Solution::dp(&coins, amount, &mut visited)
     }
 
     fn dp(coins: &[i32], remain: i32, visited: &mut [i32]) -> i32 {
