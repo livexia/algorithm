@@ -16,6 +16,20 @@ impl Solution {
             }
         }
         dp[l]
+        // with official solution
+        // let l = s.len();
+        // let mut dp = vec![false; l + 1];
+        // dp[0] = true;
+        // for i in 0..=l {
+        //     for j in 0..i {
+        //         let word = &s[j..i];
+        //         if dp[j] && word_dict.contains(&word.to_string()) {
+        //             dp[i] = true;
+        //             break;
+        //         }
+        //     }
+        // }
+        // dp[l]
     }
 }
 
