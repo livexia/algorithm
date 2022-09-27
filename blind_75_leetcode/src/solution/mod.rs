@@ -16,3 +16,4 @@ mod s0190_reverse_bits;
 mod s0070_climbing_stairs;
 mod s0322_coin_change;
 mod s0300_longest_increasing_subsequence;
+mod s1143_longest_common_subsequence;
