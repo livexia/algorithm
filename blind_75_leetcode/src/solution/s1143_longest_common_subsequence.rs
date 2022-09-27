@@ -3,47 +3,21 @@ pub struct Solution {}
 
 impl Solution {
     pub fn longest_common_subsequence(text1: String, text2: String) -> i32 {
-        let (text1, text2) = if text1.len() < text2.len() {
-            (text1, text2)
-        } else {
-            (text2, text1)
-        };
-
-        let mut shown = vec![0; 26];
-
-        let mut pos = vec![];
-        for (index1, char1) in text1.char_indices() {
-            let offset = shown[(char1 as u8 - 'a' as u8) as usize];
-            println!("- {:?}, {}, {}, {}", pos, index1, char1, offset);
-            for (index2, char2) in text2.char_indices().skip(offset) {
-                if char1 == char2 {
-                    pos.push(index2);
-                    shown[(char2 as u8 - 'a' as u8) as usize] = index2 + 1;
-                    break;
+        let l1 = text1.len();
+        let l2 = text2.len();
+        let text1 = text1.as_bytes();
+        let text2 = text2.as_bytes();
+        let mut dp = vec![vec![0; l2 + 1]; l1 + 1];
+        for i in 1..=l1 {
+            for j in 1..=l2 {
+                if text1[i - 1] == text2[j - 1] {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j].max(dp[i][j - 1]);
                 }
             }
         }
-        println!("- {:?}", pos);
-        if pos.is_empty() {
-            return 0;
-        }
-
-        let mut dp = vec![];
-        dp.push(&pos[0]);
-        for index in 1..pos.len() {
-            if &pos[index] > dp.last().unwrap() {
-                dp.push(&pos[index]);
-            } else {
-                match dp.binary_search(&&pos[index]) {
-                    Ok(_) => (),
-                    Err(j) => {
-                        dp[j] = &pos[index];
-                    }
-                }
-            }
-        }
-        println!("{:?}", dp);
-        dp.len() as i32
+        dp[l1][l2]
     }
 }
 
@@ -57,6 +31,7 @@ mod tests_1143 {
 
     #[test]
     fn it_works() {
+        assert_eq!(helper("aa", "aaa"), 2);
         assert_eq!(helper("pqr", "qrpz"), 2);
         assert_eq!(helper("acfhgc", "afgch"), 4);
         assert_eq!(helper("abcefhgch", "aefgc"), 5);
