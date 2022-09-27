@@ -3,13 +3,18 @@ pub struct Solution {}
 
 impl Solution {
     pub fn rob(nums: Vec<i32>) -> i32 {
-        let mut dp = vec![0; nums.len() + 2];
+        let mut before_last_max = 0;
+        let mut last_max = 0;
 
         for (i, num) in nums.iter().enumerate() {
-            dp[i + 2] = dp[..=i].iter().max().unwrap() + num;
+            let temp = before_last_max;
+            if i > 1 {
+                before_last_max = before_last_max.max(last_max)
+            }
+            last_max = temp + num;
         }
 
-        dp.into_iter().max().unwrap()
+        before_last_max.max(last_max)
     }
 }
 
