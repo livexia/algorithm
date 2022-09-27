@@ -19,3 +19,4 @@ mod s0300_longest_increasing_subsequence;
 mod s1143_longest_common_subsequence;
 mod s0139_word_break;
 mod s0377_combination_sum_iv;
+mod s0198_house_robber;
