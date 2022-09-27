@@ -4,12 +4,7 @@ pub struct Solution {}
 impl Solution {
     pub fn combination_sum4(nums: Vec<i32>, target: i32) -> i32 {
         let mut dp = vec![0; target as usize + 1];
-        for &num in &nums {
-            if target < num {
-                continue;
-            }
-            dp[num as usize] += 1;
-        }
+        dp[0] = 1;
         for i in 0..=target {
             for num in &nums {
                 if &i < num {
