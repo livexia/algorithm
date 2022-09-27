@@ -3,6 +3,7 @@ pub struct Solution {}
 
 impl Solution {
     pub fn word_break(s: String, word_dict: Vec<String>) -> bool {
+        // with bottom up
         let l = s.len();
         let mut dp = vec![false; l + 1];
         dp[0] = true;
@@ -16,6 +17,7 @@ impl Solution {
             }
         }
         dp[l]
+
         // with official solution
         // let l = s.len();
         // let mut dp = vec![false; l + 1];
@@ -30,6 +32,47 @@ impl Solution {
         //     }
         // }
         // dp[l]
+
+        // with top down
+        // let l = s.len();
+        // let mut memo = vec![false; l + 1];
+        // let mut visited = vec![false; l + 1];
+        // Solution::dp(&s, &word_dict, &mut memo, &mut visited, l)
+    }
+
+    fn dp(
+        s: &str,
+        word_dict: &[String],
+        memo: &mut [bool],
+        visited: &mut [bool],
+        index: usize,
+    ) -> bool {
+        if index == 0 {
+            return true;
+        }
+        if visited[index] {
+            return memo[index];
+        }
+        visited[index] = true;
+        // for w in word_dict {
+        //     if index < w.len() {
+        //         continue;
+        //     }
+        //     let word = &s[(index - w.len())..index];
+        //     if word == w && Solution::dp(s, word_dict, memo, visited, index - w.len()) {
+        //         memo[index] = true;
+        //         return true;
+        //     }
+        // }
+        for j in 0..index {
+            let word = &s[j..index];
+            if word_dict.contains(&word.to_string()) && Solution::dp(s, word_dict, memo, visited, j)
+            {
+                memo[index] = true;
+                return true;
+            }
+        }
+        memo[index]
     }
 }
 
