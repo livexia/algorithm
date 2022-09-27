@@ -14,6 +14,25 @@ impl Solution {
             }
         }
         dp[target as usize]
+
+        // with top down
+        // let mut memo = vec![-1; target as usize + 1];
+        // memo[0] = 1;
+        // Solution::dp(&nums, target as usize, &mut memo)
+    }
+
+    fn dp(nums: &[i32], target: usize, memo: &mut [i32]) -> i32 {
+        if memo[target] >= 0 {
+            memo[target]
+        } else {
+            memo[target] = nums
+                .iter()
+                .filter(|&&num| num <= target as i32)
+                .fold(0, |s, &num| {
+                    s + Solution::dp(nums, target - num as usize, memo)
+                });
+            memo[target]
+        }
     }
 }
 
