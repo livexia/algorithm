@@ -7,10 +7,10 @@ impl Solution {
         dp[2] = nums[0];
 
         for (i, num) in nums.iter().enumerate().skip(1) {
-            dp[i + 2] = dp[i].max(dp[i - 1]) + num;
+            dp[i + 2] = dp[i + 1].max(dp[i] + num);
         }
 
-        dp[nums.len() + 1].max(dp[nums.len()])
+        dp[nums.len() + 1]
     }
 }
 
