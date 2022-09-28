@@ -3,16 +3,14 @@ pub struct Solution {}
 
 impl Solution {
     pub fn rob(nums: Vec<i32>) -> i32 {
-        let mut before_last_max = 0;
-        let mut last_max = nums[0];
+        let mut dp = vec![0; nums.len() + 2];
+        dp[2] = nums[0];
 
-        for num in &nums[1..] {
-            let temp = before_last_max;
-            before_last_max = before_last_max.max(last_max);
-            last_max = temp + num;
+        for (i, num) in nums.iter().enumerate().skip(1) {
+            dp[i + 2] = dp[i].max(dp[i - 1]) + num;
         }
 
-        before_last_max.max(last_max)
+        dp[nums.len() + 1].max(dp[nums.len()])
     }
 }
 
@@ -22,6 +20,8 @@ mod tests_198 {
 
     #[test]
     fn it_works() {
+        assert_eq!(Solution::rob(vec![1]), 1);
+        assert_eq!(Solution::rob(vec![1, 1]), 1);
         assert_eq!(Solution::rob(vec![1, 2, 3, 1]), 4);
         assert_eq!(Solution::rob(vec![2, 7, 9, 3, 1]), 12);
     }
