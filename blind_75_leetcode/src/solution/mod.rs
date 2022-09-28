@@ -23,3 +23,4 @@ mod s0198_house_robber;
 mod s0213_house_robber_ii;
 mod s0091_decode_ways;
 mod s0062_unique_paths;
+mod s0055_jump_game;
