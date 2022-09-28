@@ -5,15 +5,15 @@ impl Solution {
     pub fn unique_paths(m: i32, n: i32) -> i32 {
         let m = m as usize;
         let n = n as usize;
-        let mut dp = vec![vec![0; n]; m];
-        dp[0] = vec![1; n];
-        (0..m).for_each(|i| dp[i][0] = 1);
-        for i in 1..m {
+        let mut pre = vec![1; n];
+        let mut cur = vec![1; n];
+        for _ in 1..m {
             for j in 1..n {
-                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+                cur[j] = pre[j] + cur[j - 1]
             }
+            pre.swap_with_slice(&mut cur);
         }
-        dp[m - 1][n - 1]
+        pre[n - 1]
     }
 }
 
