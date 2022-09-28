@@ -7,9 +7,15 @@ impl Solution {
         let mut dp = vec![false; l];
         dp[0] = true;
         for i in 1..l {
+            if dp[i] {
+                continue;
+            }
             for j in (0..i).rev() {
                 if dp[j] && j + nums[j] as usize >= i {
-                    dp[i] = true;
+                    let upperbond = nums.len().min(j + nums[j] as usize + 1);
+                    for k in i..upperbond {
+                        dp[k] = true;
+                    }
                     break;
                 }
             }
@@ -26,5 +32,6 @@ mod tests_55 {
     fn it_works() {
         assert_eq!(Solution::can_jump(vec![2, 3, 1, 1, 4]), true);
         assert_eq!(Solution::can_jump(vec![3, 2, 1, 0, 4]), false);
+        assert_eq!(Solution::can_jump(vec![2, 0]), true);
     }
 }
