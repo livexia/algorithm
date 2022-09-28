@@ -21,3 +21,4 @@ mod s0139_word_break;
 mod s0377_combination_sum_iv;
 mod s0198_house_robber;
 mod s0213_house_robber_ii;
+mod s0091_decode_ways;
