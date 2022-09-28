@@ -4,25 +4,29 @@ pub struct Solution {}
 impl Solution {
     pub fn num_decodings(s: String) -> i32 {
         let l = s.len();
-        let mut dp = vec![0; l + 1];
-        dp[0] = 1;
-        for i in 0..=l {
+        let mut before_last = 0;
+        let mut last = 1;
+
+        for i in 1..=l {
+            let temp = last;
+            last = 0;
             if i > 0 {
                 if let Ok(n) = s[(i - 1)..i].parse::<i32>() {
-                    if n > 0 && n <= 9 {
-                        dp[i] += dp[i - 1]
+                    if n != 0 {
+                        last += temp;
                     }
                 }
             }
             if i > 1 {
                 if let Ok(n) = s[(i - 2)..i].parse::<i32>() {
                     if n > 9 && n <= 26 {
-                        dp[i] += dp[i - 2]
+                        last += before_last;
                     }
                 }
             }
+            before_last = temp;
         }
-        dp[l]
+        last
     }
 }
 
