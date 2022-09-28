@@ -22,3 +22,4 @@ mod s0377_combination_sum_iv;
 mod s0198_house_robber;
 mod s0213_house_robber_ii;
 mod s0091_decode_ways;
+mod s0062_unique_paths;
