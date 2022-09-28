@@ -4,23 +4,21 @@ pub struct Solution {}
 impl Solution {
     pub fn can_jump(nums: Vec<i32>) -> bool {
         let l = nums.len();
-        let mut dp = vec![false; l];
-        dp[0] = true;
+        if l == 1 {
+            return true;
+        }
+        let mut max = nums[0];
         for i in 1..l {
-            if dp[i] {
-                continue;
-            }
-            for j in (0..i).rev() {
-                if dp[j] && j + nums[j] as usize >= i {
-                    let upperbond = nums.len().min(j + nums[j] as usize + 1);
-                    for k in i..upperbond {
-                        dp[k] = true;
-                    }
-                    break;
+            if i as i32 <= max {
+                max = max.max(nums[i] + i as i32);
+                if max as usize >= l - 1 {
+                    return true;
                 }
+            } else {
+                return false;
             }
         }
-        dp[l - 1]
+        false
     }
 }
 
@@ -33,5 +31,7 @@ mod tests_55 {
         assert_eq!(Solution::can_jump(vec![2, 3, 1, 1, 4]), true);
         assert_eq!(Solution::can_jump(vec![3, 2, 1, 0, 4]), false);
         assert_eq!(Solution::can_jump(vec![2, 0]), true);
+        assert_eq!(Solution::can_jump(vec![0]), true);
+        assert_eq!(Solution::can_jump(vec![2, 0, 0]), true);
     }
 }
