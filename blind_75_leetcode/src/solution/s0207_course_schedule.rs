@@ -5,20 +5,34 @@ impl Solution {
     pub fn can_finish(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> bool {
         let num_courses = num_courses as usize;
         let mut graph: Vec<Vec<usize>> = vec![vec![]; num_courses];
+        use std::collections::HashSet;
+        let mut courses = HashSet::new();
         for prerequisite in prerequisites {
             graph[prerequisite[1] as usize].push(prerequisite[0] as usize);
+            courses.insert(prerequisite[1] as usize);
         }
-        println!("{:?}", graph);
-        for course in 0..num_courses as usize {
+        let mut memo = vec![false; num_courses];
+        for course in (0..num_courses).rev() {
+            if !courses.contains(&course) {
+                continue;
+            }
             let visited = vec![false; num_courses];
             let mut stack = vec![(course, visited)];
             while let Some((next_course, mut visited)) = stack.pop() {
+                if memo[next_course] {
+                    continue;
+                }
                 if visited[next_course] {
                     return false;
                 }
+                if graph[next_course].is_empty() {
+                    memo[next_course] = true;
+                    continue;
+                }
                 visited[next_course] = true;
-                stack.extend(graph[next_course].iter().map(|&c| (c, visited.clone())))
+                stack.extend(graph[next_course].iter().map(|&c| (c, visited.clone())));
             }
+            memo[course] = true;
         }
 
         true
