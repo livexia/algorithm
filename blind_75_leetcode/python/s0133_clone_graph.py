@@ -15,7 +15,7 @@ class Solution:
         visited = {}
         return Solution.bfs(node, visited)
 
-    def bfs(node: "Node", visited: Dict[int, "Node"]) -> "Node":
+    def dfs(node: "Node", visited: Dict[int, "Node"]) -> "Node":
         if visited.get(node.val):
             return visited[node.val]
         val = copy(node.val)

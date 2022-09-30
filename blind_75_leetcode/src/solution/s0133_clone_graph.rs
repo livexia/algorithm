@@ -9,10 +9,10 @@ impl Solution {
     pub fn clone_graph(node: Rc<Node>) -> Rc<Node> {
         let node = Rc::new(node);
         let mut visited = HashMap::new();
-        Solution::bfs(&node, &mut visited)
+        Solution::dfs(&node, &mut visited)
     }
 
-    fn bfs(node: &Rc<Node>, visited: &mut HashMap<i32, Rc<Node>>) -> Rc<Node> {
+    fn dfs(node: &Rc<Node>, visited: &mut HashMap<i32, Rc<Node>>) -> Rc<Node> {
         if let Some(node) = visited.get(&node.val) {
             return node.clone();
         }
@@ -20,7 +20,7 @@ impl Solution {
         let neighbors = node
             .neighbors
             .iter()
-            .map(|n| Solution::bfs(n, visited))
+            .map(|n| Solution::dfs(n, visited))
             .collect();
         let node = Rc::new(Node::new(val, neighbors));
         visited.insert(val, node.clone());
@@ -41,6 +41,7 @@ impl Node {
 
 #[cfg(test)]
 mod tests_133 {
+    #[allow(unused_imports)]
     use super::*;
 
     #[test]
