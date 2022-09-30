@@ -4,18 +4,18 @@ pub struct Solution {}
 impl Solution {
     pub fn can_finish(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> bool {
         let num_courses = num_courses as usize;
-        let mut graph: Vec<usize> = vec![num_courses + 1; num_courses];
+        let mut graph: Vec<Vec<usize>> = vec![vec![]; num_courses];
         for prerequisite in prerequisites {
-            graph[prerequisite[1] as usize] = prerequisite[0] as usize;
+            graph[prerequisite[1] as usize].push(prerequisite[0] as usize);
         }
         println!("{:?}", graph);
         for course in 0..num_courses as usize {
-            let mut next_course = course;
-            while graph[next_course] != num_courses + 1 {
-                next_course = graph[next_course];
+            let mut stack = graph[course].clone();
+            while let Some(next_course) = stack.pop() {
                 if next_course == course {
                     return false;
                 }
+                stack.extend_from_slice(&graph[next_course])
             }
         }
 
@@ -39,6 +39,7 @@ mod tests_207 {
         assert_eq!(Solution::can_finish(2, vec![vec![1, 0]]), true);
         assert_eq!(Solution::can_finish(2, vec![vec![1, 0], vec![0, 1]]), false);
         assert_eq!(can_finish(3, vec![[0, 2], [1, 2], [2, 0]]), false);
+        assert_eq!(can_finish(4, vec![[1, 0], [2, 1], [3, 2], [1, 3]]), false);
         assert_eq!(
             can_finish(
                 20,
