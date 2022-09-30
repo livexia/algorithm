@@ -12,7 +12,7 @@ impl Solution {
             courses.insert(prerequisite[1] as usize);
         }
         let mut memo = vec![false; num_courses];
-        for course in (0..num_courses).rev() {
+        for course in 0..num_courses {
             if !courses.contains(&course) {
                 continue;
             }
@@ -20,6 +20,10 @@ impl Solution {
             let mut stack = vec![(course, visited)];
             while let Some((next_course, mut visited)) = stack.pop() {
                 if memo[next_course] {
+                    continue;
+                }
+                if graph[next_course].iter().all(|&i| memo[i]) {
+                    memo[next_course] = true;
                     continue;
                 }
                 if visited[next_course] {
