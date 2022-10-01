@@ -29,8 +29,12 @@ impl Solution {
                 stack.extend(graph[next_course].iter().filter(|&&c| visited[c] != 2));
             }
             visited[course] = 2;
+            let mut s = vec![course];
+            while let Some(c) = s.pop() {
+                visited[c] = 2;
+                s.extend(graph[c].iter().filter(|&&c| visited[c] != 2))
+            }
         }
-
         true
     }
 }
@@ -277,6 +281,11 @@ mod tests_207 {
 
         assert_eq!(
             can_finish(800, vec![[528, 318], [535, 528], [318, 247]]),
+            true
+        );
+
+        assert_eq!(
+            can_finish(6, vec![[4, 3], [3, 2], [2, 0], [1, 0], [5, 4], [3, 1],]),
             true
         );
         assert_eq!(
