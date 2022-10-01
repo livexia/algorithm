@@ -5,25 +5,23 @@ impl Solution {
     pub fn pacific_atlantic(heights: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
         let m = heights.len();
         let n = heights[0].len();
-        let mut status = vec![vec![0u8; n]; m];
-        status[0] = vec![1; n];
-        (0..m).for_each(|i| status[i][0] = 1);
-        status[m - 1] = status[m - 1].iter().map(|&v| v | 2).collect();
-        (0..m).for_each(|i| status[i][n - 1] |= 2);
 
-        let mut visited = vec![vec![false; n]; m];
-        for i in 0..m {
-            for j in 0..n {
-                if !visited[i][j] {
-                    Solution::dfs(i, j, &heights, &mut visited, &mut status);
-                }
-            }
+        let mut pacific_visited = vec![vec![false; n]; m];
+        for (i, j) in (0..n).map(|j| (0, j)).chain((1..m).map(|i| (i, 0))) {
+            Solution::dfs(i, j, &heights, &mut pacific_visited);
+        }
+        let mut atlantic_visited = vec![vec![false; n]; m];
+        for (i, j) in (0..n)
+            .map(|j| (m - 1, j))
+            .chain((0..m - 1).map(|i| (i, n - 1)))
+        {
+            Solution::dfs(i, j, &heights, &mut atlantic_visited);
         }
 
         let mut ans = vec![];
         for i in 0..m {
             for j in 0..n {
-                if status[i][j] == 3 {
+                if pacific_visited[i][j] && atlantic_visited[i][j] {
                     ans.push(vec![i as i32, j as i32])
                 }
             }
@@ -31,34 +29,24 @@ impl Solution {
         ans
     }
 
-    fn dfs(
-        x: usize,
-        y: usize,
-        heights: &[Vec<i32>],
-        visited: &mut [Vec<bool>],
-        status: &mut [Vec<u8>],
-    ) -> u8 {
+    fn dfs(x: usize, y: usize, heights: &[Vec<i32>], visited: &mut [Vec<bool>]) {
         if visited[x][y] {
-            return status[x][y];
+            return;
         }
         let h = heights[x][y];
         visited[x][y] = true;
-        if x > 0 && h >= heights[x - 1][y] {
-            status[x][y] |= Solution::dfs(x - 1, y, heights, visited, status)
+        if x > 0 && h <= heights[x - 1][y] {
+            Solution::dfs(x - 1, y, heights, visited)
         }
-        if y > 0 && h >= heights[x][y - 1] {
-            status[x][y] |= Solution::dfs(x, y - 1, heights, visited, status)
+        if y > 0 && h <= heights[x][y - 1] {
+            Solution::dfs(x, y - 1, heights, visited)
         }
-        if x < heights.len() - 1 && h >= heights[x + 1][y] {
-            status[x][y] |= Solution::dfs(x + 1, y, heights, visited, status)
+        if x < heights.len() - 1 && h <= heights[x + 1][y] {
+            Solution::dfs(x + 1, y, heights, visited)
         }
-        if y < heights[0].len() - 1 && h >= heights[x][y + 1] {
-            status[x][y] |= Solution::dfs(x, y + 1, heights, visited, status)
+        if y < heights[0].len() - 1 && h <= heights[x][y + 1] {
+            Solution::dfs(x, y + 1, heights, visited)
         }
-        if status[x][y] != 3 {
-            visited[x][y] = false
-        }
-        status[x][y]
     }
 }
 
