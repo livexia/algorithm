@@ -35,14 +35,19 @@ impl Solution {
         let m = heights.len();
         let n = heights[0].len();
 
-        let mut queue = VecDeque::from_iter((0..n).map(|j| (0, j)).chain((1..m).map(|i| (i, 0))));
+        let mut queue = VecDeque::new();
+        (0..n)
+            .map(|j| (0, j))
+            .chain((1..m).map(|i| (i, 0)))
+            .for_each(|p| queue.push_back(p));
         let mut pacific_visited = vec![vec![false; n]; m];
         Solution::bfs(m, n, &heights, &mut queue, &mut pacific_visited);
-        let mut queue = VecDeque::from_iter(
-            (0..n)
-                .map(|j| (m - 1, j))
-                .chain((0..m - 1).map(|i| (i, n - 1))),
-        );
+
+        let mut queue = VecDeque::new();
+        (0..n)
+            .map(|j| (m - 1, j))
+            .chain((0..m - 1).map(|i| (i, n - 1)))
+            .for_each(|p| queue.push_back(p));
         let mut atlantic_visited = vec![vec![false; n]; m];
         Solution::bfs(m, n, &heights, &mut queue, &mut atlantic_visited);
 
