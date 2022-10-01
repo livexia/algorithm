@@ -273,6 +273,12 @@ mod tests_207 {
             ),
             true
         );
+        assert_eq!(can_finish(4, vec![[2, 1], [3, 2], [1, 0]]), true);
+
+        assert_eq!(
+            can_finish(800, vec![[528, 318], [535, 528], [318, 247]]),
+            true
+        );
         assert_eq!(
             can_finish(
                 800,
