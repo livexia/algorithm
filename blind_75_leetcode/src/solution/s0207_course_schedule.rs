@@ -5,36 +5,29 @@ impl Solution {
     pub fn can_finish(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> bool {
         let num_courses = num_courses as usize;
         let mut graph: Vec<Vec<usize>> = vec![vec![]; num_courses];
-        use std::collections::HashSet;
-        let mut courses = HashSet::new();
         for prerequisite in prerequisites {
             graph[prerequisite[1] as usize].push(prerequisite[0] as usize);
-            courses.insert(prerequisite[1] as usize);
         }
         let mut visited = vec![0; num_courses];
+
         for course in 0..num_courses {
-            if !courses.contains(&course) {
-                continue;
-            }
-            let mut stack = vec![course];
-            while let Some(next_course) = stack.pop() {
-                if graph[next_course].iter().all(|&i| visited[i] == 2) {
-                    visited[next_course] = 2;
-                    continue;
-                }
-                if visited[next_course] == 1 {
-                    return false;
-                }
-                visited[next_course] = 1;
-                stack.extend(graph[next_course].iter().filter(|&&c| visited[c] != 2));
-            }
-            visited[course] = 2;
-            let mut s = vec![course];
-            while let Some(c) = s.pop() {
-                visited[c] = 2;
-                s.extend(graph[c].iter().filter(|&&c| visited[c] != 2))
+            if visited[course] == 0 && !Solution::dfs(course, &graph, &mut visited) {
+                return false;
             }
         }
+        true
+    }
+
+    fn dfs(cur: usize, graph: &[Vec<usize>], visited: &mut [u8]) -> bool {
+        visited[cur] = 1;
+        for &next in &graph[cur] {
+            if visited[next] == 0 && !Solution::dfs(next, graph, visited) {
+                return false;
+            } else if visited[next] == 1 {
+                return false;
+            }
+        }
+        visited[cur] = 2;
         true
     }
 }
