@@ -3,19 +3,49 @@ pub struct Solution {}
 
 impl Solution {
     pub fn can_finish(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> bool {
+        // wit dfs
+        // let num_courses = num_courses as usize;
+        // let mut graph: Vec<Vec<usize>> = vec![vec![]; num_courses];
+        // for prerequisite in prerequisites {
+        //     graph[prerequisite[1] as usize].push(prerequisite[0] as usize);
+        // }
+        // let mut visited = vec![0; num_courses];
+
+        // for course in 0..num_courses {
+        //     if visited[course] == 0 && !Solution::dfs(course, &graph, &mut visited) {
+        //         return false;
+        //     }
+        // }
+        // true
+
+        // with bfs
         let num_courses = num_courses as usize;
         let mut graph: Vec<Vec<usize>> = vec![vec![]; num_courses];
+        let mut inedge = vec![0; num_courses];
         for prerequisite in prerequisites {
             graph[prerequisite[1] as usize].push(prerequisite[0] as usize);
+            inedge[prerequisite[0] as usize] += 1;
         }
-        let mut visited = vec![0; num_courses];
+        use std::collections::VecDeque;
 
-        for course in 0..num_courses {
-            if visited[course] == 0 && !Solution::dfs(course, &graph, &mut visited) {
-                return false;
+        let mut queue = VecDeque::new();
+        for c in 0..num_courses {
+            if inedge[c] == 0 {
+                queue.push_back(c)
             }
         }
-        true
+        let mut visited = 0;
+        while let Some(cur) = queue.pop_front() {
+            visited += 1;
+            for &next in &graph[cur] {
+                inedge[next] -= 1;
+                if inedge[next] == 0 {
+                    queue.push_back(next);
+                }
+            }
+        }
+
+        visited == num_courses
     }
 
     fn dfs(cur: usize, graph: &[Vec<usize>], visited: &mut [u8]) -> bool {
