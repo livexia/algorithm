@@ -1,22 +1,50 @@
 #![allow(dead_code)]
+
+use std::collections::VecDeque;
 pub struct Solution {}
 
 impl Solution {
     pub fn pacific_atlantic(heights: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+        // with dfs
+        // let m = heights.len();
+        // let n = heights[0].len();
+
+        // let mut pacific_visited = vec![vec![false; n]; m];
+        // for (i, j) in (0..n).map(|j| (0, j)).chain((1..m).map(|i| (i, 0))) {
+        //     Solution::dfs(i, j, &heights, &mut pacific_visited);
+        // }
+        // let mut atlantic_visited = vec![vec![false; n]; m];
+        // for (i, j) in (0..n)
+        //     .map(|j| (m - 1, j))
+        //     .chain((0..m - 1).map(|i| (i, n - 1)))
+        // {
+        //     Solution::dfs(i, j, &heights, &mut atlantic_visited);
+        // }
+
+        // let mut ans = vec![];
+        // for i in 0..m {
+        //     for j in 0..n {
+        //         if pacific_visited[i][j] && atlantic_visited[i][j] {
+        //             ans.push(vec![i as i32, j as i32])
+        //         }
+        //     }
+        // }
+        // ans
+
+        // with bfs
         let m = heights.len();
         let n = heights[0].len();
 
+        let mut queue = VecDeque::from_iter((0..n).map(|j| (0, j)).chain((1..m).map(|i| (i, 0))));
         let mut pacific_visited = vec![vec![false; n]; m];
-        for (i, j) in (0..n).map(|j| (0, j)).chain((1..m).map(|i| (i, 0))) {
-            Solution::dfs(i, j, &heights, &mut pacific_visited);
-        }
+        Solution::bfs(m, n, &heights, &mut queue, &mut pacific_visited);
+        let mut queue = VecDeque::from_iter(
+            (0..n)
+                .map(|j| (m - 1, j))
+                .chain((0..m - 1).map(|i| (i, n - 1))),
+        );
         let mut atlantic_visited = vec![vec![false; n]; m];
-        for (i, j) in (0..n)
-            .map(|j| (m - 1, j))
-            .chain((0..m - 1).map(|i| (i, n - 1)))
-        {
-            Solution::dfs(i, j, &heights, &mut atlantic_visited);
-        }
+        Solution::bfs(m, n, &heights, &mut queue, &mut atlantic_visited);
 
         let mut ans = vec![];
         for i in 0..m {
@@ -27,6 +55,34 @@ impl Solution {
             }
         }
         ans
+    }
+
+    fn bfs(
+        m: usize,
+        n: usize,
+        heights: &[Vec<i32>],
+        queue: &mut VecDeque<(usize, usize)>,
+        visited: &mut [Vec<bool>],
+    ) {
+        while let Some((x, y)) = queue.pop_front() {
+            if visited[x][y] {
+                continue;
+            }
+            visited[x][y] = true;
+            let h = heights[x][y];
+            if x > 0 && h <= heights[x - 1][y] {
+                queue.push_back((x - 1, y))
+            }
+            if y > 0 && h <= heights[x][y - 1] {
+                queue.push_back((x, y - 1))
+            }
+            if x < m - 1 && h <= heights[x + 1][y] {
+                queue.push_back((x + 1, y))
+            }
+            if y < n - 1 && h <= heights[x][y + 1] {
+                queue.push_back((x, y + 1))
+            }
+        }
     }
 
     fn dfs(x: usize, y: usize, heights: &[Vec<i32>], visited: &mut [Vec<bool>]) {
