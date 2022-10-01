@@ -5,7 +5,7 @@ impl Solution {
     pub fn max_area(height: Vec<i32>) -> i32 {
         let mut ans = 0;
         let mut left = 0;
-        let mut right = 1;
+        let mut right = height.len() - 1;
         while left < right {
             ans = ans.max((height[right].min(height[left])) * (right - left) as i32);
             if height[left] < height[right] {
