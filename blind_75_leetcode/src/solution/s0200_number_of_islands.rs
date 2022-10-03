@@ -1,35 +1,31 @@
 #![allow(dead_code)]
+
+use std::ops::Add;
 pub struct Solution {}
 
-use std::collections::HashSet;
 impl Solution {
     pub fn num_islands(grid: Vec<Vec<char>>) -> i32 {
         let m = grid.len();
         let n = grid[0].len();
-        let mut islands = HashSet::new();
+        let mut grid = grid;
+        let mut count = 0;
         for i in 0..m {
             for j in 0..n {
                 if grid[i][j] == '1' {
-                    islands.insert((i as i32, j as i32));
+                    count += 1;
+                    Solution::dfs(i as i32, j as i32, &mut grid, m as i32, n as i32);
                 }
-            }
-        }
-        let mut count = 0;
-        let mut visited = HashSet::new();
-        for &(i, j) in &islands {
-            if !visited.contains(&(i, j)) {
-                count += 1;
-                Solution::dfs(i, j, &islands, &mut visited);
             }
         }
         count
     }
 
-    fn dfs(i: i32, j: i32, islands: &HashSet<(i32, i32)>, visited: &mut HashSet<(i32, i32)>) {
-        if islands.contains(&(i, j)) && visited.insert((i, j)) {
+    fn dfs(i: i32, j: i32, grid: &mut [Vec<char>], m: i32, n: i32) {
+        if i >= 0 && i < m && j >= 0 && j < n && grid[i as usize][j as usize] == '1' {
+            grid[i as usize][j as usize] = '0';
             let dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)];
             for (dx, dy) in dirs {
-                Solution::dfs(i + dx, j + dy, islands, visited)
+                Solution::dfs(i + dx, j + dy, grid, m, n)
             }
         }
     }
