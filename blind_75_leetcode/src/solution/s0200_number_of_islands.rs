@@ -19,21 +19,46 @@ impl Solution {
                 }
             }
         }
+        let mut rank = vec![0; m * n];
         for i in 0..m {
             for j in 0..n {
                 if grid[i][j] == '1' {
                     grid[i][j] = '0';
                     if i > 0 && grid[i - 1][j] == '1' {
-                        Solution::union(&mut union_find, i * n + j, (i - 1) * n + j, &mut count)
+                        Solution::union(
+                            &mut union_find,
+                            &mut rank,
+                            i * n + j,
+                            (i - 1) * n + j,
+                            &mut count,
+                        )
                     }
                     if i < m - 1 && grid[i + 1][j] == '1' {
-                        Solution::union(&mut union_find, i * n + j, (i + 1) * n + j, &mut count)
+                        Solution::union(
+                            &mut union_find,
+                            &mut rank,
+                            i * n + j,
+                            (i + 1) * n + j,
+                            &mut count,
+                        )
                     }
                     if j > 0 && grid[i][j - 1] == '1' {
-                        Solution::union(&mut union_find, i * n + j, i * n + j - 1, &mut count)
+                        Solution::union(
+                            &mut union_find,
+                            &mut rank,
+                            i * n + j,
+                            i * n + j - 1,
+                            &mut count,
+                        )
                     }
                     if j < n - 1 && grid[i][j + 1] == '1' {
-                        Solution::union(&mut union_find, i * n + j, i * n + j + 1, &mut count)
+                        Solution::union(
+                            &mut union_find,
+                            &mut rank,
+                            i * n + j,
+                            i * n + j + 1,
+                            &mut count,
+                        )
                     }
                 }
             }
@@ -48,11 +73,19 @@ impl Solution {
         union_find[a]
     }
 
-    fn union(union_find: &mut [usize], a: usize, b: usize, count: &mut i32) {
-        let root_a = Solution::find(union_find, a);
-        let root_b = Solution::find(union_find, b);
+    fn union(union_find: &mut [usize], rank: &mut [usize], a: usize, b: usize, count: &mut i32) {
+        let mut root_a = Solution::find(union_find, a);
+        let mut root_b = Solution::find(union_find, b);
         if root_a != root_b {
+            if rank[root_a] < rank[root_b] {
+                let temp = root_a;
+                root_a = root_b;
+                root_b = temp;
+            }
             union_find[root_b] = root_a;
+            if rank[root_a] == rank[root_b] {
+                rank[root_a] += 1;
+            }
             *count -= 1;
         }
     }
