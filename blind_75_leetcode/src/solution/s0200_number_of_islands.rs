@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 
-use std::ops::Add;
 pub struct Solution {}
 
 impl Solution {
@@ -13,7 +12,32 @@ impl Solution {
             for j in 0..n {
                 if grid[i][j] == '1' {
                     count += 1;
-                    Solution::dfs(i as i32, j as i32, &mut grid, m as i32, n as i32);
+                    // with dfs
+                    // Solution::dfs(i as i32, j as i32, &mut grid, m as i32, n as i32);
+
+                    // with bfs
+                    use std::collections::VecDeque;
+                    let mut queue = VecDeque::new();
+                    queue.push_back((i, j));
+                    while let Some((x, y)) = queue.pop_front() {
+                        if grid[x][y] == '0' {
+                            continue;
+                        }
+                        grid[x][y] = '0';
+
+                        if x > 0 && grid[x - 1][y] == '1' {
+                            queue.push_back((x - 1, y))
+                        }
+                        if x < m - 1 && grid[x + 1][y] == '1' {
+                            queue.push_back((x + 1, y))
+                        }
+                        if y > 0 && grid[x][y - 1] == '1' {
+                            queue.push_back((x, y - 1))
+                        }
+                        if y < n - 1 && grid[x][y + 1] == '1' {
+                            queue.push_back((x, y + 1))
+                        }
+                    }
                 }
             }
         }
