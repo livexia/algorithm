@@ -28,3 +28,4 @@ mod s0133_clone_graph;
 mod s0207_course_schedule;
 mod s0417_pacific_atlantic_water_flow;
 mod s0200_number_of_islands;
+mod s0128_longest_consecutive_sequence;
