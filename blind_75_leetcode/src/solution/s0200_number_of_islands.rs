@@ -26,7 +26,7 @@ impl Solution {
     }
 
     fn dfs(i: i32, j: i32, islands: &HashSet<(i32, i32)>, visited: &mut HashSet<(i32, i32)>) {
-        if visited.insert((i, j)) {
+        if visited.insert((i, j)) && islands.contains(&(i, j)) {
             let dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)];
             for (dx, dy) in dirs {
                 if islands.contains(&(i + dx, j + dy)) {
