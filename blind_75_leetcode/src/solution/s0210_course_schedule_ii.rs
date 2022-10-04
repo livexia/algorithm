@@ -3,6 +3,7 @@ pub struct Solution {}
 
 impl Solution {
     pub fn find_order(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> Vec<i32> {
+        // with dfs
         let num_courses = num_courses as usize;
         let mut adjacency_list = vec![vec![]; num_courses];
         for p in prerequisites {
@@ -19,6 +20,36 @@ impl Solution {
             }
         }
         ans.into_iter().rev().collect()
+
+        // with bfs
+        // let num_courses = num_courses as usize;
+        // let mut adjacency_list = vec![vec![]; num_courses];
+        // let mut inedge = vec![0; num_courses];
+        // for p in prerequisites {
+        //     adjacency_list[p[1] as usize].push(p[0] as usize);
+        //     inedge[p[0] as usize] += 1;
+        // }
+        // let mut ans = vec![];
+        // use std::collections::VecDeque;
+        // let mut queue: VecDeque<usize> = inedge
+        //     .iter()
+        //     .enumerate()
+        //     .filter(|&(_, &v)| v == 0)
+        //     .map(|(i, _)| i)
+        //     .collect();
+        // while let Some(cur) = queue.pop_front() {
+        //     ans.push(cur as i32);
+        //     for &next in &adjacency_list[cur] {
+        //         inedge[next] -= 1;
+        //         if inedge[next] == 0 {
+        //             queue.push_back(next)
+        //         }
+        //     }
+        // }
+        // if ans.len() != num_courses {
+        //     return vec![];
+        // }
+        // ans
     }
 
     fn dfs(
