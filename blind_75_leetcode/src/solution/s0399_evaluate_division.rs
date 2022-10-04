@@ -15,6 +15,10 @@ impl Solution {
                 .entry(&e[0])
                 .or_insert(vec![])
                 .push((&e[1], v));
+            adjacency_list
+                .entry(&e[1])
+                .or_insert(vec![])
+                .push((&e[0], 1.0 / v));
             node_list.insert(&e[0]);
             node_list.insert(&e[1]);
         }
@@ -29,7 +33,8 @@ impl Solution {
                 }
                 continue;
             }
-            match Solution::dfs(&adjacency_list, &q[0], &q[1]) {
+            let mut visited = node_list.iter().map(|s| (&s[..], 0)).collect();
+            match Solution::dfs(&adjacency_list, &q[0], &q[1], &mut visited) {
                 Ok(f) => ans.push(f),
                 Err(_) => ans.push(-1.0),
             }
@@ -41,21 +46,30 @@ impl Solution {
         adjacency_list: &HashMap<&str, Vec<(&str, f64)>>,
         dividend: &str,
         divisor: &str,
+        visited: &mut HashMap<&str, u8>,
     ) -> Result<f64, ()> {
+        if !visited.contains_key(&dividend) {
+            return Err(());
+        }
+        if visited.get(dividend).unwrap() == &2 {
+            return Err(());
+        }
+        *visited.get_mut(dividend).unwrap() = 1;
         for &(possible_d, v) in adjacency_list.get(&dividend).unwrap_or(&vec![]) {
             if possible_d == divisor {
                 return Ok(v);
             } else {
-                match Solution::dfs(adjacency_list, possible_d, divisor) {
+                if visited.get(possible_d).unwrap() == &1 {
+                    continue;
+                }
+                match Solution::dfs(adjacency_list, possible_d, divisor, visited) {
                     Ok(f) => return Ok(v * f),
                     Err(_) => (),
                 }
             }
         }
-        match Solution::dfs(adjacency_list, divisor, dividend) {
-            Ok(f) => Ok(1.0 / f),
-            Err(_) => Err(()),
-        }
+        *visited.get_mut(dividend).unwrap() = 2;
+        Err(())
     }
 }
 
