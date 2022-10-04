@@ -1,26 +1,26 @@
 #![allow(dead_code)]
 pub struct Solution {}
 
+use std::collections::HashSet;
 impl Solution {
     pub fn longest_consecutive(nums: Vec<i32>) -> i32 {
-        let mut nums = nums;
-        nums.sort();
-        nums.dedup();
-        if nums.len() == 0 {
-            return 0;
-        }
-        let mut start = 0;
-        let mut pointer = 1;
+        let nums_set: HashSet<i32> = nums.into_iter().collect();
         let mut ans = 0;
-        while pointer < nums.len() {
-            if nums[pointer - 1] + 1 != nums[pointer] {
-                ans = ans.max(pointer - start);
-                start = pointer;
+        for &num in &nums_set {
+            if !nums_set.contains(&(num - 1)) {
+                let mut start = num;
+                let mut count = 1;
+                while nums_set.contains(&(start + 1)) {
+                    start += 1;
+                    count += 1;
+                }
+                ans = ans.max(count);
+                if ans * 2 > nums_set.len() as i32 {
+                    break;
+                }
             }
-            pointer += 1;
         }
-        ans = ans.max(pointer - start);
-        ans as i32
+        ans
     }
 }
 
