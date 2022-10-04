@@ -1,9 +1,17 @@
 #![allow(dead_code)]
 pub struct Solution {}
 
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 impl Solution {
     pub fn calc_equation(
+        equations: Vec<Vec<String>>,
+        values: Vec<f64>,
+        queries: Vec<Vec<String>>,
+    ) -> Vec<f64> {
+        // Solution::calc_equation_dfs(equations, values, queries)
+        Solution::calc_equation_bfs(equations, values, queries)
+    }
+    fn calc_equation_dfs(
         equations: Vec<Vec<String>>,
         values: Vec<f64>,
         queries: Vec<Vec<String>>,
@@ -57,6 +65,49 @@ impl Solution {
         }
         Err(())
     }
+
+    fn calc_equation_bfs(
+        equations: Vec<Vec<String>>,
+        values: Vec<f64>,
+        queries: Vec<Vec<String>>,
+    ) -> Vec<f64> {
+        let mut adjacency_list: HashMap<&str, Vec<(&str, f64)>> = HashMap::new();
+        for (e, &v) in equations.iter().zip(values.iter()) {
+            adjacency_list
+                .entry(&e[0])
+                .or_insert(vec![])
+                .push((&e[1], v));
+            adjacency_list
+                .entry(&e[1])
+                .or_insert(vec![])
+                .push((&e[0], 1.0 / v));
+        }
+
+        let mut ans = vec![-1.0; queries.len()];
+        for i in 0..queries.len() {
+            let q = &queries[i];
+            if !adjacency_list.contains_key(&q[0][..]) || !adjacency_list.contains_key(&q[1][..]) {
+                continue;
+            }
+            let mut queue = VecDeque::new();
+            queue.push_back((&q[0][..], 1.0));
+
+            let mut visited = HashSet::new();
+            while let Some((dividend, res)) = queue.pop_front() {
+                if visited.insert(dividend) {
+                    for (divisor, f) in adjacency_list.get(&dividend[..]).unwrap() {
+                        if divisor == &q[1] {
+                            ans[i] = res * f;
+                            queue.clear();
+                        } else {
+                            queue.push_back((divisor, res * f))
+                        }
+                    }
+                }
+            }
+        }
+        ans
+    }
 }
 
 #[cfg(test)]
@@ -73,6 +124,19 @@ mod tests_399 {
 
     #[test]
     fn it_works() {
+        assert_eq!(
+            Solution::calc_equation(
+                helper(leetcode_vec![["a", "b"], ["c", "d"]]),
+                vec![1.0, 1.0],
+                helper(leetcode_vec![
+                    ["a", "c"],
+                    ["b", "d"],
+                    ["b", "a"],
+                    ["d", "c"]
+                ])
+            ),
+            vec![-1.0, -1.0, 1.0, 1.0]
+        );
         assert_eq!(
             Solution::calc_equation(
                 helper(leetcode_vec![["a", "e"], ["b", "e"]]),
