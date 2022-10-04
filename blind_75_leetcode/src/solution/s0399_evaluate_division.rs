@@ -9,7 +9,6 @@ impl Solution {
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
         let mut adjacency_list: HashMap<&str, Vec<(&str, f64)>> = HashMap::new();
-        let mut node_list = HashSet::new();
         for (e, &v) in equations.iter().zip(values.iter()) {
             adjacency_list
                 .entry(&e[0])
@@ -19,21 +18,15 @@ impl Solution {
                 .entry(&e[1])
                 .or_insert(vec![])
                 .push((&e[0], 1.0 / v));
-            node_list.insert(&e[0]);
-            node_list.insert(&e[1]);
         }
 
         let mut ans = vec![];
         for q in &queries {
-            if q[0] == q[1] {
-                if node_list.contains(&q[0]) {
-                    ans.push(1.0);
-                } else {
-                    ans.push(-1.0)
-                }
+            if !adjacency_list.contains_key(&q[0][..]) || !adjacency_list.contains_key(&q[1][..]) {
+                ans.push(-1.0);
                 continue;
             }
-            let mut visited = node_list.iter().map(|s| (&s[..], 0)).collect();
+            let mut visited = HashSet::new();
             match Solution::dfs(&adjacency_list, &q[0], &q[1], &mut visited) {
                 Ok(f) => ans.push(f),
                 Err(_) => ans.push(-1.0),
@@ -46,20 +39,14 @@ impl Solution {
         adjacency_list: &HashMap<&str, Vec<(&str, f64)>>,
         dividend: &str,
         divisor: &str,
-        visited: &mut HashMap<&str, u8>,
+        visited: &mut HashSet<String>,
     ) -> Result<f64, ()> {
-        if !visited.contains_key(&dividend) {
-            return Err(());
-        }
-        if visited.get(dividend).unwrap() == &2 {
-            return Err(());
-        }
-        *visited.get_mut(dividend).unwrap() = 1;
-        for &(possible_d, v) in adjacency_list.get(&dividend).unwrap_or(&vec![]) {
+        visited.insert(dividend.to_string());
+        for &(possible_d, v) in adjacency_list.get(&dividend).unwrap() {
             if possible_d == divisor {
                 return Ok(v);
             } else {
-                if visited.get(possible_d).unwrap() == &1 {
+                if visited.contains(possible_d) {
                     continue;
                 }
                 match Solution::dfs(adjacency_list, possible_d, divisor, visited) {
@@ -68,7 +55,6 @@ impl Solution {
                 }
             }
         }
-        *visited.get_mut(dividend).unwrap() = 2;
         Err(())
     }
 }
