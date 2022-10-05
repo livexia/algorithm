@@ -28,8 +28,9 @@ impl Solution {
             adjacency_list[vb].push((va, 1.0 / v));
         }
         // Solution::calc_equation_dfs(&vars, &adjacency_list, queries)
-        // Solution::calc_equation_bfs(&vars, &adjacency_list, queries)
-        Solution::union_find(&vars, &equations, values, queries)
+        Solution::calc_equation_bfs(&vars, &adjacency_list, queries)
+        // Solution::union_find(&vars, &equations, values, queries)
+        // Solution::floyd(&vars, &equations, values, queries)
     }
 
     fn calc_equation_dfs(
@@ -179,6 +180,41 @@ impl Solution {
                 rank[divisor_root] += 1;
             }
         }
+    }
+
+    fn floyd(
+        vars: &HashMap<&String, usize>,
+        equations: &Vec<Vec<String>>,
+        values: Vec<f64>,
+        queries: Vec<Vec<String>>,
+    ) -> Vec<f64> {
+        let mut dp = vec![vec![-1.0; vars.len()]; vars.len()];
+        for (e, &v) in equations.iter().zip(values.iter()) {
+            let &va = vars.get(&e[0]).unwrap();
+            let &vb = vars.get(&e[1]).unwrap();
+            dp[va][vb] = v;
+            dp[vb][va] = 1.0 / v;
+        }
+        let num_vars = vars.len();
+        for k in 0..num_vars {
+            for i in 0..num_vars {
+                for j in 0..num_vars {
+                    if dp[i][k] > 0.0 && dp[k][j] > 0.0 {
+                        dp[i][j] = dp[i][k] * dp[k][j]
+                    }
+                }
+            }
+        }
+        let mut ans = vec![-1.0; queries.len()];
+        for i in 0..queries.len() {
+            if !vars.contains_key(&queries[i][0]) || !vars.contains_key(&queries[i][1]) {
+                continue;
+            }
+            let &va = vars.get(&queries[i][0]).unwrap();
+            let &vb = vars.get(&queries[i][1]).unwrap();
+            ans[i] = dp[va][vb]
+        }
+        ans
     }
 }
 
