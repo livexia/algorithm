@@ -9,8 +9,10 @@ impl Solution {
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
         // Solution::calc_equation_dfs(equations, values, queries)
-        Solution::calc_equation_bfs(equations, values, queries)
+        // Solution::calc_equation_bfs(equations, values, queries)
+        Solution::union_find(equations, values, queries)
     }
+
     fn calc_equation_dfs(
         equations: Vec<Vec<String>>,
         values: Vec<f64>,
@@ -107,6 +109,67 @@ impl Solution {
             }
         }
         ans
+    }
+
+    fn union_find(
+        equations: Vec<Vec<String>>,
+        values: Vec<f64>,
+        queries: Vec<Vec<String>>,
+    ) -> Vec<f64> {
+        let mut parent: HashMap<String, (String, f64)> = HashMap::new();
+        let mut rank: HashMap<String, i32> = HashMap::new();
+        for e in &equations {
+            parent.insert(e[0].clone(), (e[0].clone(), 1.0));
+            parent.insert(e[1].clone(), (e[1].clone(), 1.0));
+            rank.insert(e[0].clone(), 0);
+            rank.insert(e[1].clone(), 0);
+        }
+        for (e, v) in equations.iter().zip(values.iter()) {
+            Solution::union(&e[0][..], &e[1][..], *v, &mut parent, &mut rank);
+        }
+        let mut ans = vec![-1.0; queries.len()];
+        for i in 0..queries.len() {
+            if !parent.contains_key(&queries[i][0]) || !parent.contains_key(&queries[i][1]) {
+                continue;
+            }
+            let (dividend, v1) = Solution::find(&queries[i][0], &mut parent);
+            let (divisor, v2) = Solution::find(&queries[i][1], &mut parent);
+            if dividend == divisor {
+                ans[i] = v1 / v2;
+            }
+        }
+        ans
+    }
+
+    fn find(a: &str, parent: &mut HashMap<String, (String, f64)>) -> (String, f64) {
+        let (dest, v) = parent.get(a).unwrap().clone();
+        if a != dest {
+            let next = Solution::find(&dest, parent);
+            *parent.get_mut(a).unwrap() = (next.0.clone(), next.1 * v);
+        }
+        parent.get(a).unwrap().clone()
+    }
+
+    fn union(
+        dividend: &str,
+        divisor: &str,
+        value: f64,
+        parent: &mut HashMap<String, (String, f64)>,
+        rank: &mut HashMap<String, i32>,
+    ) {
+        let (mut dividend_root, dividend_value) = Solution::find(dividend, parent);
+        let (mut divisor_root, divisor_value) = Solution::find(divisor, parent);
+        if dividend_root != divisor_root {
+            if rank.get(&dividend_root).unwrap() < rank.get(&divisor_root).unwrap() {
+                use std::mem::swap;
+                swap(&mut dividend_root, &mut divisor_root)
+            }
+            *parent.get_mut(&dividend_root[..]).unwrap() =
+                (divisor_root.clone(), divisor_value * value / dividend_value);
+            if rank.get(&dividend_root).unwrap() < rank.get(&divisor_root).unwrap() {
+                *rank.entry(dividend_root).or_insert(0) += 1;
+            }
+        }
     }
 }
 
