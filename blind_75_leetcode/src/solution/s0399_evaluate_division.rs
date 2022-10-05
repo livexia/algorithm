@@ -1,43 +1,55 @@
 #![allow(dead_code)]
 pub struct Solution {}
 
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, VecDeque};
 impl Solution {
     pub fn calc_equation(
         equations: Vec<Vec<String>>,
         values: Vec<f64>,
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
-        // Solution::calc_equation_dfs(equations, values, queries)
-        // Solution::calc_equation_bfs(equations, values, queries)
-        Solution::union_find(equations, values, queries)
+        let mut vars = HashMap::new();
+        let mut index = 0usize;
+        for e in &equations {
+            if !vars.contains_key(&e[0]) {
+                vars.insert(&e[0], index);
+                index += 1;
+            }
+            if !vars.contains_key(&e[1]) {
+                vars.insert(&e[1], index);
+                index += 1;
+            }
+        }
+        let mut adjacency_list: Vec<Vec<(usize, f64)>> = vec![vec![]; index];
+        for (e, &v) in equations.iter().zip(values.iter()) {
+            let &va = vars.get(&e[0]).unwrap();
+            let &vb = vars.get(&e[1]).unwrap();
+            adjacency_list[va].push((vb, v));
+            adjacency_list[vb].push((va, 1.0 / v));
+        }
+        // Solution::calc_equation_dfs(&vars, &adjacency_list, queries)
+        // Solution::calc_equation_bfs(&vars, &adjacency_list, queries)
+        Solution::union_find(&vars, &equations, values, queries)
     }
 
     fn calc_equation_dfs(
-        equations: Vec<Vec<String>>,
-        values: Vec<f64>,
+        vars: &HashMap<&String, usize>,
+        adjacency_list: &[Vec<(usize, f64)>],
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
-        let mut adjacency_list: HashMap<&str, Vec<(&str, f64)>> = HashMap::new();
-        for (e, &v) in equations.iter().zip(values.iter()) {
-            adjacency_list
-                .entry(&e[0])
-                .or_insert(vec![])
-                .push((&e[1], v));
-            adjacency_list
-                .entry(&e[1])
-                .or_insert(vec![])
-                .push((&e[0], 1.0 / v));
-        }
-
         let mut ans = vec![];
         for q in &queries {
-            if !adjacency_list.contains_key(&q[0][..]) || !adjacency_list.contains_key(&q[1][..]) {
+            if !vars.contains_key(&q[0]) || !vars.contains_key(&q[1]) {
                 ans.push(-1.0);
                 continue;
             }
-            let mut visited = HashSet::new();
-            match Solution::dfs(&adjacency_list, &q[0], &q[1], &mut visited) {
+            let mut visited = vec![false; vars.len()];
+            match Solution::dfs(
+                &adjacency_list,
+                *vars.get(&q[0]).unwrap(),
+                *vars.get(&q[1]).unwrap(),
+                &mut visited,
+            ) {
                 Ok(f) => ans.push(f),
                 Err(_) => ans.push(-1.0),
             }
@@ -46,17 +58,17 @@ impl Solution {
     }
 
     fn dfs(
-        adjacency_list: &HashMap<&str, Vec<(&str, f64)>>,
-        dividend: &str,
-        divisor: &str,
-        visited: &mut HashSet<String>,
+        adjacency_list: &[Vec<(usize, f64)>],
+        dividend: usize,
+        divisor: usize,
+        visited: &mut [bool],
     ) -> Result<f64, ()> {
-        visited.insert(dividend.to_string());
-        for &(possible_d, v) in adjacency_list.get(&dividend).unwrap() {
+        visited[dividend] = true;
+        for &(possible_d, v) in &adjacency_list[dividend] {
             if possible_d == divisor {
                 return Ok(v);
             } else {
-                if visited.contains(possible_d) {
+                if visited[possible_d] {
                     continue;
                 }
                 match Solution::dfs(adjacency_list, possible_d, divisor, visited) {
@@ -69,36 +81,26 @@ impl Solution {
     }
 
     fn calc_equation_bfs(
-        equations: Vec<Vec<String>>,
-        values: Vec<f64>,
+        vars: &HashMap<&String, usize>,
+        adjacency_list: &[Vec<(usize, f64)>],
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
-        let mut adjacency_list: HashMap<&str, Vec<(&str, f64)>> = HashMap::new();
-        for (e, &v) in equations.iter().zip(values.iter()) {
-            adjacency_list
-                .entry(&e[0])
-                .or_insert(vec![])
-                .push((&e[1], v));
-            adjacency_list
-                .entry(&e[1])
-                .or_insert(vec![])
-                .push((&e[0], 1.0 / v));
-        }
-
         let mut ans = vec![-1.0; queries.len()];
         for i in 0..queries.len() {
             let q = &queries[i];
-            if !adjacency_list.contains_key(&q[0][..]) || !adjacency_list.contains_key(&q[1][..]) {
+            if !vars.contains_key(&q[0]) || !vars.contains_key(&q[1]) {
                 continue;
             }
             let mut queue = VecDeque::new();
-            queue.push_back((&q[0][..], 1.0));
+            queue.push_back((vars.get(&q[0]).unwrap(), 1.0));
 
-            let mut visited = HashSet::new();
-            while let Some((dividend, res)) = queue.pop_front() {
-                if visited.insert(dividend) {
-                    for (divisor, f) in adjacency_list.get(&dividend[..]).unwrap() {
-                        if divisor == &q[1] {
+            let target = vars.get(&q[1]).unwrap();
+            let mut visited = vec![false; vars.len()];
+            while let Some((&dividend, res)) = queue.pop_front() {
+                if !visited[dividend] {
+                    visited[dividend] = true;
+                    for (divisor, f) in &adjacency_list[dividend] {
+                        if divisor == target {
                             ans[i] = res * f;
                             queue.clear();
                         } else {
@@ -112,62 +114,69 @@ impl Solution {
     }
 
     fn union_find(
-        equations: Vec<Vec<String>>,
+        vars: &HashMap<&String, usize>,
+        equations: &Vec<Vec<String>>,
         values: Vec<f64>,
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
-        let mut parent: HashMap<String, (String, f64)> = HashMap::new();
-        let mut rank: HashMap<String, i32> = HashMap::new();
-        for e in &equations {
-            parent.insert(e[0].clone(), (e[0].clone(), 1.0));
-            parent.insert(e[1].clone(), (e[1].clone(), 1.0));
-            rank.insert(e[0].clone(), 0);
-            rank.insert(e[1].clone(), 0);
-        }
+        let mut parent: Vec<usize> = (0..vars.len()).collect();
+        let mut weight = vec![1.0; vars.len()];
+        let mut rank = vec![0; vars.len()];
+
         for (e, v) in equations.iter().zip(values.iter()) {
-            Solution::union(&e[0][..], &e[1][..], *v, &mut parent, &mut rank);
+            let &va = vars.get(&e[0]).unwrap();
+            let &vb = vars.get(&e[1]).unwrap();
+            Solution::union(va, vb, *v, &mut parent, &mut weight, &mut rank);
         }
         let mut ans = vec![-1.0; queries.len()];
         for i in 0..queries.len() {
-            if !parent.contains_key(&queries[i][0]) || !parent.contains_key(&queries[i][1]) {
+            if !vars.contains_key(&queries[i][0]) || !vars.contains_key(&queries[i][1]) {
                 continue;
             }
-            let (dividend, v1) = Solution::find(&queries[i][0], &mut parent);
-            let (divisor, v2) = Solution::find(&queries[i][1], &mut parent);
+            let &va = vars.get(&queries[i][0]).unwrap();
+            let &vb = vars.get(&queries[i][1]).unwrap();
+            let dividend = Solution::find(va, &mut parent, &mut weight);
+            let divisor = Solution::find(vb, &mut parent, &mut weight);
             if dividend == divisor {
-                ans[i] = v1 / v2;
+                ans[i] = weight[va] / weight[vb];
             }
         }
         ans
     }
 
-    fn find(a: &str, parent: &mut HashMap<String, (String, f64)>) -> (String, f64) {
-        let (dest, v) = parent.get(a).unwrap().clone();
-        if a != dest {
-            let next = Solution::find(&dest, parent);
-            *parent.get_mut(a).unwrap() = (next.0.clone(), next.1 * v);
+    fn find(a: usize, parent: &mut [usize], weight: &mut [f64]) -> usize {
+        if a != parent[a] {
+            let father = Solution::find(parent[a], parent, weight);
+            weight[a] *= weight[parent[a]];
+            parent[a] = father;
         }
-        parent.get(a).unwrap().clone()
+        parent[a]
     }
 
     fn union(
-        dividend: &str,
-        divisor: &str,
+        dividend: usize,
+        divisor: usize,
         value: f64,
-        parent: &mut HashMap<String, (String, f64)>,
-        rank: &mut HashMap<String, i32>,
+        parent: &mut [usize],
+        weight: &mut [f64],
+        rank: &mut [usize],
     ) {
-        let (mut dividend_root, dividend_value) = Solution::find(dividend, parent);
-        let (mut divisor_root, divisor_value) = Solution::find(divisor, parent);
+        let mut dividend_root = Solution::find(dividend, parent, weight);
+        let mut divisor_root = Solution::find(divisor, parent, weight);
+        let mut value = value;
+        let mut dividend = dividend;
+        let mut divisor = divisor;
         if dividend_root != divisor_root {
-            if rank.get(&dividend_root).unwrap() < rank.get(&divisor_root).unwrap() {
+            if rank[divisor_root] < rank[dividend_root] {
                 use std::mem::swap;
-                swap(&mut dividend_root, &mut divisor_root)
+                swap(&mut dividend_root, &mut divisor_root);
+                swap(&mut dividend, &mut divisor);
+                value = 1.0 / value;
             }
-            *parent.get_mut(&dividend_root[..]).unwrap() =
-                (divisor_root.clone(), divisor_value * value / dividend_value);
-            if rank.get(&dividend_root).unwrap() < rank.get(&divisor_root).unwrap() {
-                *rank.entry(dividend_root).or_insert(0) += 1;
+            parent[dividend_root] = divisor_root;
+            weight[dividend_root] = weight[divisor] * value / weight[dividend];
+            if rank[dividend_root] == rank[divisor_root] {
+                rank[divisor_root] += 1;
             }
         }
     }
@@ -187,6 +196,26 @@ mod tests_399 {
 
     #[test]
     fn it_works() {
+        assert_eq!(
+            Solution::calc_equation(
+                helper(leetcode_vec![
+                    ["x1", "x2"],
+                    ["x2", "x3"],
+                    ["x3", "x4"],
+                    ["x4", "x5"]
+                ]),
+                vec![3.0, 4.0, 5.0, 6.0],
+                helper(leetcode_vec![
+                    ["x1", "x5"],
+                    ["x5", "x2"],
+                    ["x2", "x4"],
+                    ["x2", "x2"],
+                    ["x2", "x9"],
+                    ["x9", "x9"]
+                ])
+            ),
+            vec![360.0, 0.00833, 20.0, 1.0, -1.0, -1.0]
+        );
         assert_eq!(
             Solution::calc_equation(
                 helper(leetcode_vec![["a", "b"], ["c", "d"]]),
