@@ -1,9 +1,77 @@
 #![allow(dead_code)]
+
+use std::collections::VecDeque;
 pub struct Solution {}
 
 impl Solution {
     pub fn longest_increasing_path(matrix: Vec<Vec<i32>>) -> i32 {
-        Solution::longest_increasing_path_dfs(matrix)
+        // Solution::longest_increasing_path_dfs(matrix)
+        Solution::longest_increasing_path_bfs(matrix)
+    }
+
+    pub fn longest_increasing_path_bfs(matrix: Vec<Vec<i32>>) -> i32 {
+        let m = matrix.len();
+        let n = matrix[0].len();
+
+        let mut out_degrees = vec![vec![0; n]; m];
+        for i in 0..m {
+            for j in 0..n {
+                let cur = matrix[i][j];
+                if i > 0 && cur < matrix[i - 1][j] {
+                    out_degrees[i][j] += 1;
+                }
+                if i < m - 1 && cur < matrix[i + 1][j] {
+                    out_degrees[i][j] += 1;
+                }
+                if j > 0 && cur < matrix[i][j - 1] {
+                    out_degrees[i][j] += 1;
+                }
+                if j < n - 1 && cur < matrix[i][j + 1] {
+                    out_degrees[i][j] += 1;
+                }
+            }
+        }
+
+        let mut queue: VecDeque<(usize, usize)> = (0..m)
+            .map(|i| (0..n).map(move |j| (i, j)))
+            .flatten()
+            .filter(|&(i, j)| out_degrees[i][j] == 0)
+            .collect();
+
+        let mut layer_number = 0;
+        while !queue.is_empty() {
+            layer_number += 1;
+            let layer_size = queue.len();
+            for _ in 0..layer_size {
+                let (x, y) = queue.pop_front().unwrap();
+                let cur = matrix[x][y];
+                if x > 0 && cur > matrix[x - 1][y] {
+                    Solution::add_to_next_layer(x - 1, y, &mut out_degrees, &mut queue)
+                }
+                if x < m - 1 && cur > matrix[x + 1][y] {
+                    Solution::add_to_next_layer(x + 1, y, &mut out_degrees, &mut queue)
+                }
+                if y > 0 && cur > matrix[x][y - 1] {
+                    Solution::add_to_next_layer(x, y - 1, &mut out_degrees, &mut queue)
+                }
+                if y < n - 1 && cur > matrix[x][y + 1] {
+                    Solution::add_to_next_layer(x, y + 1, &mut out_degrees, &mut queue)
+                }
+            }
+        }
+        layer_number
+    }
+
+    fn add_to_next_layer(
+        x: usize,
+        y: usize,
+        out_degrees: &mut [Vec<i32>],
+        queue: &mut VecDeque<(usize, usize)>,
+    ) {
+        out_degrees[x][y] -= 1;
+        if out_degrees[x][y] == 0 {
+            queue.push_back((x, y));
+        }
     }
 
     pub fn longest_increasing_path_dfs(matrix: Vec<Vec<i32>>) -> i32 {
@@ -53,6 +121,10 @@ mod tests_329 {
 
     #[test]
     fn it_works() {
+        assert_eq!(
+            Solution::longest_increasing_path(leetcode_vec![[3, 4, 5], [3, 8, 6]]),
+            5
+        );
         assert_eq!(
             Solution::longest_increasing_path(leetcode_vec![[0, 2, 9], [13, 11, 10]]),
             6
