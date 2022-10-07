@@ -49,12 +49,18 @@ impl Solution {
         word.bytes().map(|c| c as u8 - 'a' as u8 + 1).collect()
     }
 
+    fn vec_to_num(word: Vec<u8>) -> u64 {
+        word.into_iter().fold(0, |sum, i| sum * 27 + i as u64)
+    }
+
     fn replace_at(a: u64, c: u8, index: usize, word_length: usize) -> u64 {
         let offset = 27u64.pow((word_length - 1 - index) as u32);
         a - ((a / offset) % 27) * offset + (c as u64 + 1) * offset
     }
 
     fn num_to_vec(num: u64) -> Vec<u8> {
+        // 26 won't work 'aa' -> 00 -> 'a'
+        // 27 will work 'aa' -> 11 -> 'aa'
         let mut num = num;
         let mut res = vec![];
         while num != 0 {
@@ -62,10 +68,6 @@ impl Solution {
             num /= 27;
         }
         res.into_iter().rev().collect()
-    }
-
-    fn vec_to_num(word: Vec<u8>) -> u64 {
-        word.into_iter().fold(0, |sum, i| sum * 27 + i as u64)
     }
 }
 
