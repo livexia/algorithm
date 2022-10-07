@@ -25,19 +25,41 @@ impl Solution {
         let &begin_id = word_map.get(&begin_word).unwrap();
         let &end_id = word_map.get(&end_word).unwrap();
 
-        let mut dis = vec![last + 1; last];
-        dis[begin_id] = 2;
+        let mut dis_begin = vec![last + 1; last];
+        dis_begin[begin_id] = 0;
+        let mut queue_begin = VecDeque::new();
+        queue_begin.push_back(begin_id);
 
-        let mut queue = VecDeque::new();
-        queue.push_back(begin_id);
-        while let Some(cur) = queue.pop_front() {
-            if cur == end_id {
-                return dis[end_id] as i32 / 2;
+        let mut dis_end = vec![last + 1; last];
+        dis_end[end_id] = 0;
+        let mut queue_end = VecDeque::new();
+        queue_end.push_back(end_id);
+
+        while !queue_begin.is_empty() && !queue_end.is_empty() {
+            let cur_layer_num = queue_begin.len();
+            for _ in 0..cur_layer_num {
+                let cur_begin = queue_begin.pop_front().unwrap();
+                if dis_end[begin_id] != last + 1 {
+                    return (dis_begin[end_id] + dis_end[end_id]) as i32 / 2 + 1;
+                }
+                for &next in &edges[cur_begin] {
+                    if dis_begin[next] == last + 1 {
+                        dis_begin[next] = dis_begin[cur_begin] + 1;
+                        queue_begin.push_back(next);
+                    }
+                }
             }
-            for &next in &edges[cur] {
-                if dis[next] == last + 1 {
-                    dis[next] = dis[cur] + 1;
-                    queue.push_back(next);
+            let cur_layer_num = queue_end.len();
+            for _ in 0..cur_layer_num {
+                let cur_end = queue_end.pop_front().unwrap();
+                if dis_begin[end_id] != last + 1 {
+                    return (dis_begin[end_id] + dis_end[end_id]) as i32 / 2 + 1;
+                }
+                for &next in &edges[cur_end] {
+                    if dis_end[next] == last + 1 {
+                        dis_end[next] = dis_end[cur_end] + 1;
+                        queue_end.push_back(next);
+                    }
                 }
             }
         }
