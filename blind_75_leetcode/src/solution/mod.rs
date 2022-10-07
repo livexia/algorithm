@@ -33,3 +33,4 @@ mod s0733_flood_fill;
 mod s0210_course_schedule_ii;
 mod s0399_evaluate_division;
 mod s0127_word_ladder;
+mod s0329_longest_increasing_path_in_a_matrix;
