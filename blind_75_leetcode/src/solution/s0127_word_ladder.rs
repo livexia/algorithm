@@ -13,10 +13,10 @@ impl Solution {
         }
         let word_list: HashSet<u64> = word_list
             .into_iter()
-            .map(|s| Solution::vec_to_num(Solution::word_to_vec(s)))
+            .map(|s| Solution::word_to_num(s))
             .collect();
-        let end_word = Solution::vec_to_num(Solution::word_to_vec(end_word));
-        let begin_word = Solution::vec_to_num(Solution::word_to_vec(begin_word));
+        let end_word = Solution::word_to_num(end_word);
+        let begin_word = Solution::word_to_num(begin_word);
         if !word_list.contains(&end_word) {
             return 0;
         }
@@ -51,6 +51,12 @@ impl Solution {
 
     fn vec_to_num(word: Vec<u8>) -> u64 {
         word.into_iter().fold(0, |sum, i| sum * 27 + i as u64)
+    }
+
+    fn word_to_num(word: String) -> u64 {
+        word.bytes()
+            .map(|c| c as u8 - 'a' as u8 + 1)
+            .fold(0, |sum, i| sum * 27 + i as u64)
     }
 
     fn replace_at(a: u64, c: u8, index: usize, word_length: usize) -> u64 {
