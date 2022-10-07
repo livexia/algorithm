@@ -1,9 +1,75 @@
 #![allow(dead_code)]
 pub struct Solution {}
 
-use std::collections::{HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
+type Map = HashMap<String, usize>;
+type Edges = Vec<Vec<usize>>;
 impl Solution {
     pub fn ladder_length(begin_word: String, end_word: String, word_list: Vec<String>) -> i32 {
+        // Solution::ladder_length_base_bfs(begin_word, end_word, word_list)
+        Solution::ladder_length_bfs(begin_word, end_word, word_list)
+    }
+
+    fn ladder_length_bfs(begin_word: String, end_word: String, word_list: Vec<String>) -> i32 {
+        // indexing word
+        let mut last = 0;
+        let mut word_map: Map = HashMap::new();
+        let mut edges: Edges = vec![];
+        Solution::insert_edge(begin_word.clone(), &mut last, &mut word_map, &mut edges);
+        for word in word_list {
+            Solution::insert_edge(word, &mut last, &mut word_map, &mut edges);
+        }
+        if !word_map.contains_key(&end_word) {
+            return 0;
+        }
+        let &begin_id = word_map.get(&begin_word).unwrap();
+        let &end_id = word_map.get(&end_word).unwrap();
+
+        let mut dis = vec![last + 1; last];
+        dis[begin_id] = 2;
+
+        let mut queue = VecDeque::new();
+        queue.push_back(begin_id);
+        while let Some(cur) = queue.pop_front() {
+            if cur == end_id {
+                return dis[end_id] as i32 / 2;
+            }
+            for &next in &edges[cur] {
+                if dis[next] == last + 1 {
+                    dis[next] = dis[cur] + 1;
+                    queue.push_back(next);
+                }
+            }
+        }
+        0
+    }
+
+    fn insert_word(word: String, last: &mut usize, word_map: &mut Map, edges: &mut Edges) -> usize {
+        match word_map.get(&word) {
+            None => {
+                word_map.insert(word, *last);
+                edges.push(vec![]);
+                *last += 1;
+                *last - 1
+            }
+            Some(&i) => i,
+        }
+    }
+
+    fn insert_edge(word: String, last: &mut usize, word_map: &mut Map, edges: &mut Edges) {
+        let id1 = Solution::insert_word(word.clone(), last, word_map, edges);
+        for i in 0..word.len() {
+            let mut temp = String::new();
+            temp.push_str(&word[0..i]);
+            temp.push('*');
+            temp.push_str(&word[i + 1..]);
+            let id2 = Solution::insert_word(temp, last, word_map, edges);
+            edges[id1].push(id2);
+            edges[id2].push(id1);
+        }
+    }
+
+    fn ladder_length_base_bfs(begin_word: String, end_word: String, word_list: Vec<String>) -> i32 {
         let word_length = begin_word.len();
         let mut chars: Vec<HashSet<u8>> = vec![HashSet::new(); word_length];
         for word in &word_list {
