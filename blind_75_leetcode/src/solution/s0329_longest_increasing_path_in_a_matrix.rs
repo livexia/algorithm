@@ -7,6 +7,45 @@ impl Solution {
     pub fn longest_increasing_path(matrix: Vec<Vec<i32>>) -> i32 {
         // Solution::longest_increasing_path_dfs(matrix)
         Solution::longest_increasing_path_bfs(matrix)
+        // Solution::longest_increasing_path_bfs2(matrix)
+    }
+
+    pub fn longest_increasing_path_bfs2(matrix: Vec<Vec<i32>>) -> i32 {
+        let m = matrix.len();
+        let n = matrix[0].len();
+        let mut memo = vec![vec![0; n]; m];
+
+        let mut res = 0;
+        for i in 0..m {
+            for j in 0..n {
+                if memo[i][j] > 0 {
+                    continue;
+                }
+                let mut queue = VecDeque::new();
+                queue.push_back((i, j, 1));
+                while let Some((x, y, count)) = queue.pop_front() {
+                    if count <= memo[x][y] {
+                        continue;
+                    }
+                    memo[x][y] = count;
+                    res = res.max(count);
+                    let cur = matrix[x][y];
+                    if x > 0 && cur < matrix[x - 1][y] {
+                        queue.push_back((x - 1, y, count + 1))
+                    }
+                    if x < m - 1 && cur < matrix[x + 1][y] {
+                        queue.push_back((x + 1, y, count + 1))
+                    }
+                    if y > 0 && cur < matrix[x][y - 1] {
+                        queue.push_back((x, y - 1, count + 1))
+                    }
+                    if y < n - 1 && cur < matrix[x][y + 1] {
+                        queue.push_back((x, y + 1, count + 1))
+                    }
+                }
+            }
+        }
+        res
     }
 
     pub fn longest_increasing_path_bfs(matrix: Vec<Vec<i32>>) -> i32 {
