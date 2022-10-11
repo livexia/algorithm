@@ -35,3 +35,4 @@ mod s0399_evaluate_division;
 mod s0127_word_ladder;
 mod s0329_longest_increasing_path_in_a_matrix;
 mod s0057_insert_interval;
+mod s0056_merge_intervals;
