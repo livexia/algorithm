@@ -3,6 +3,39 @@ pub struct Solution {}
 
 impl Solution {
     pub fn insert(intervals: Vec<Vec<i32>>, new_interval: Vec<i32>) -> Vec<Vec<i32>> {
+        // binary insert
+        // Solution::binary_insert(intervals, new_interval)
+        Solution::simulation_insert(intervals, new_interval)
+    }
+
+    fn simulation_insert(intervals: Vec<Vec<i32>>, new_interval: Vec<i32>) -> Vec<Vec<i32>> {
+        let mut left = new_interval[0];
+        let mut right = new_interval[1];
+        let mut placed = false;
+        let mut ans = vec![];
+        for interval in intervals {
+            let li = interval[0];
+            let ri = interval[1];
+            if ri < left {
+                ans.push(interval);
+            } else if li > right {
+                if !placed {
+                    placed = true;
+                    ans.push(vec![left, right])
+                }
+                ans.push(interval)
+            } else {
+                left = left.min(li);
+                right = right.max(ri);
+            }
+        }
+        if !placed {
+            ans.push(vec![left, right])
+        }
+        ans
+    }
+
+    fn binary_insert(intervals: Vec<Vec<i32>>, new_interval: Vec<i32>) -> Vec<Vec<i32>> {
         if intervals.is_empty() {
             return vec![new_interval];
         }
