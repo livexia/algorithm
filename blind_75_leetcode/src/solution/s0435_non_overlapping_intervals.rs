@@ -4,9 +4,11 @@ pub struct Solution {}
 impl Solution {
     pub fn erase_overlap_intervals(intervals: Vec<Vec<i32>>) -> i32 {
         // with sort left
-        Solution::sort_left(intervals)
+        // Solution::sort_left(intervals)
         // with dp
         // Solution::dp(intervals)
+        // with sort right
+        Solution::sort_right(intervals)
     }
 
     fn sort_left(intervals: Vec<Vec<i32>>) -> i32 {
@@ -23,6 +25,20 @@ impl Solution {
             }
         }
         count
+    }
+
+    fn sort_right(intervals: Vec<Vec<i32>>) -> i32 {
+        let mut intervals: Vec<(i32, i32)> = intervals.into_iter().map(|v| (v[0], v[1])).collect();
+        intervals.sort_by(|a, b| a.1.cmp(&b.1));
+        let mut count = 1;
+        let mut last = intervals[0].1;
+        for &(li, ri) in &intervals[1..] {
+            if last <= li {
+                last = ri;
+                count += 1;
+            }
+        }
+        intervals.len() as i32 - count
     }
 
     fn dp(intervals: Vec<Vec<i32>>) -> i32 {
