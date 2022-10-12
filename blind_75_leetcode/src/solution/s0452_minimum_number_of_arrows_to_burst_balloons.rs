@@ -7,7 +7,7 @@ impl Solution {
         Solution::sort_right(points)
     }
 
-    pub fn sort_right(mut points: Vec<Vec<i32>>) -> i32 {
+    pub fn sort_right(points: Vec<Vec<i32>>) -> i32 {
         let mut points: Vec<(i32, i32)> = points.into_iter().map(|p| (p[0], p[1])).collect();
         points.sort_by(|a, b| a.1.cmp(&b.1));
         let mut count = 1;
