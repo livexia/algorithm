@@ -65,6 +65,10 @@ mod tests_435 {
     #[test]
     fn it_works() {
         assert_eq!(
+            Solution::erase_overlap_intervals(leetcode_vec![[1, 5], [2, 3], [3, 4], [1, 3]]),
+            2
+        );
+        assert_eq!(
             Solution::erase_overlap_intervals(leetcode_vec![[1, 2], [2, 3], [3, 4], [1, 3]]),
             1
         );
