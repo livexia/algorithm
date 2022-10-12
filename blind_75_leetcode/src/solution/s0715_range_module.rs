@@ -45,30 +45,15 @@ impl RangeModule {
 
     fn remove_range(&mut self, left: i32, right: i32) {
         let mut res = vec![];
-        let (mut left, right) = (left, right);
         for &(start, end) in &self.list {
-            if start > right {
+            if start > right || left > end {
                 res.push((start, end));
-            } else if left > end {
-                res.push((left, right));
             } else {
-                let (mut nl, mut nr) = (start, end);
-                if left <= start && right >= end {
-                    left = end;
-                    continue;
-                } else if left <= start && right < end {
-                    left = right;
-                    nl = right;
-                } else if left > start && right <= end {
+                if left > start {
                     res.push((start, left));
-                    nl = right;
-                } else if left > start && right > end {
-                    res.push((start, left));
-                } else {
-                    unreachable!()
                 }
-                if nl < nr {
-                    res.push((nl, nr))
+                if right < end {
+                    res.push((right, end));
                 }
             }
         }
