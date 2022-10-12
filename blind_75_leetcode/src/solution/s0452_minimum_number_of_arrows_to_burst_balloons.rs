@@ -3,8 +3,8 @@ pub struct Solution {}
 
 impl Solution {
     pub fn find_min_arrow_shots(points: Vec<Vec<i32>>) -> i32 {
-        // Solution::sort_left(points)
-        Solution::sort_right(points)
+        Solution::sort_left(points)
+        // Solution::sort_right(points)
     }
 
     pub fn sort_right(points: Vec<Vec<i32>>) -> i32 {
@@ -24,13 +24,17 @@ impl Solution {
     pub fn sort_left(points: Vec<Vec<i32>>) -> i32 {
         let mut points: Vec<(i32, i32)> = points.into_iter().map(|p| (p[0], p[1])).collect();
         points.sort();
-        let mut count = points.len() as i32;
+        let mut count = 1;
+        // or
+        // let mut count = points.len() as i32;
         let mut last = points[0].1;
         for &(start, end) in &points[1..] {
             if start > last {
                 last = end;
+                count += 1;
             } else {
-                count -= 1;
+                // or
+                // count -= 1;
                 last = last.min(end)
             }
         }
