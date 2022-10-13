@@ -2,7 +2,7 @@ mod solution;
 
 #[macro_export]
 macro_rules! leetcode_vec {
-    ($($x: expr), *) => {
+    ($($x: expr),* $(,)?) => {
         {
             let mut temp_vce = Vec::new();
             $(
