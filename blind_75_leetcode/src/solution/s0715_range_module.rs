@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+
+use std::f32::consts::E;
 struct RangeModule {
     range: Option<(i32, i32)>,
     next: Option<Box<RangeModule>>,
@@ -125,34 +127,53 @@ impl RangeModuleWithVec {
     }
 
     fn add_range(&mut self, left: i32, right: i32) {
-        let mut res = vec![];
-        let (mut left, mut right) = (left, right);
-        let mut placed = false;
-        for &(start, end) in &self.list {
-            if start > right {
-                if !placed {
-                    placed = true;
-                    res.push((left, right));
+        if self.list.is_empty() {
+            self.list.push((left, right));
+            return;
+        }
+        let start = match self.list.binary_search_by_key(&left, |&(a, _)| a) {
+            Err(n) => {
+                if n == 0 || self.list[n - 1].1 < left {
+                    n
+                } else {
+                    n.saturating_sub(1)
                 }
-                res.push((start, end));
-            } else if left > end {
-                res.push((start, end));
-            } else {
-                left = left.min(start);
-                right = right.max(end);
+            }
+            Ok(n) => n,
+        };
+        let end = match self.list.binary_search_by_key(&right, |&(a, _)| a) {
+            Err(n) => n,
+            Ok(n) => n + 1,
+        };
+        if start == end {
+            self.list.insert(start, (left, right));
+            return;
+        }
+        let left = left.min(self.list[start].0);
+        let right = right.max(self.list[end - 1].1);
+        self.list[start] = (left, right);
+        for _ in start + 1..end {
+            if start + 1 < self.list.len() {
+                self.list.remove(start + 1);
             }
         }
-        res.push((left, right));
-        self.list = res;
     }
 
     fn query_range(&self, left: i32, right: i32) -> bool {
-        for &(start, end) in &self.list {
-            if left >= start && right <= end {
-                return true;
+        let start = match self.list.binary_search(&(left, right)) {
+            Err(n) => {
+                if n > 0 && self.list[n - 1].1 > left {
+                    n - 1
+                } else {
+                    if n == self.list.len() {
+                        return false;
+                    }
+                    n
+                }
             }
-        }
-        false
+            Ok(_) => return true,
+        };
+        self.list[start].0 <= left && self.list[start].1 >= right
     }
 
     fn remove_range(&mut self, left: i32, right: i32) {
@@ -187,6 +208,7 @@ impl RangeModuleWithVec {
 
 #[cfg(test)]
 mod tests_715 {
+    use super::RangeModuleWithVec as RangeModule;
     use super::*;
     use crate::leetcode_vec;
 
