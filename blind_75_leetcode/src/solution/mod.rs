@@ -39,3 +39,4 @@ mod s0056_merge_intervals;
 mod s0435_non_overlapping_intervals;
 mod s0452_minimum_number_of_arrows_to_burst_balloons;
 mod s0715_range_module;
+mod s0763_partition_labels;
