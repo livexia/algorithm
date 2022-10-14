@@ -10,25 +10,21 @@ impl Solution {
             .collect();
         let mut shown = vec![s[0]];
         let mut counts = vec![0];
-        println!("{:?}", s);
         for c in s {
             // 在当前出现表中不存在
-            let mut temp = 0;
-            let mut count = 1;
+            let mut flag = false;
             for i in (0..shown.len()).rev() {
-                temp |= shown[i]; // 合并集
-                count += counts[i];
                 if c & shown[i] != 0 {
                     // 在之前的集中出现
-                    shown.truncate(i);
-                    shown.push(temp);
-                    counts.truncate(i);
-                    counts.push(count);
-                    temp = 0;
+                    shown[i] = shown[i..].iter().fold(0, |s, t| s | t);
+                    shown.truncate(i + 1);
+                    counts[i] = counts[i..].iter().sum::<i32>() + 1;
+                    counts.truncate(i + 1);
+                    flag = true;
                     break;
                 }
             }
-            if temp != 0 {
+            if !flag {
                 shown.push(c);
                 counts.push(1);
             }
