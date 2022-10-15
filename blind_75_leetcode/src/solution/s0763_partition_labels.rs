@@ -7,7 +7,32 @@ impl Solution {
         // Solution::partition_labels_with_bit(s)
 
         // with interval
-        Solution::partition_labels_with_interval(s)
+        // Solution::partition_labels_with_interval(s)
+
+        // with char last pos
+        Solution::partition_labels_with_last_pos(s)
+    }
+
+    pub fn partition_labels_with_last_pos(s: String) -> Vec<i32> {
+        let mut last = vec![0; 26];
+        let s: Vec<(usize, usize)> = s
+            .bytes()
+            .map(|c| (c - 'a' as u8) as usize)
+            .enumerate()
+            .collect();
+        for &(i, c) in &s {
+            last[c] = i;
+        }
+        let (mut start, mut end) = (0, 0);
+        let mut res = vec![];
+        for (i, c) in s {
+            end = end.max(last[c]);
+            if i == end {
+                res.push((end - start) as i32 + 1);
+                start = end + 1;
+            }
+        }
+        res
     }
 
     pub fn partition_labels_with_interval(s: String) -> Vec<i32> {
