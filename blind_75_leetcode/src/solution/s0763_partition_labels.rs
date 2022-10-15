@@ -4,8 +4,36 @@ pub struct Solution {}
 impl Solution {
     pub fn partition_labels(s: String) -> Vec<i32> {
         // with bit manipulation
-        Solution::partition_labels_with_bit(s)
+        // Solution::partition_labels_with_bit(s)
+
+        // with interval
+        Solution::partition_labels_with_interval(s)
     }
+
+    pub fn partition_labels_with_interval(s: String) -> Vec<i32> {
+        let mut pos = vec![26; 26];
+        let s: Vec<u8> = s.bytes().map(|b| b - 'a' as u8).collect();
+        let mut intervals = vec![];
+        for (i, c) in s.into_iter().enumerate() {
+            if pos[c as usize] == 26 {
+                intervals.push((i, i));
+                pos[c as usize] = intervals.len() - 1;
+            } else {
+                intervals[pos[c as usize]].1 = i;
+            }
+        }
+        let mut res = vec![-1];
+        let mut last = intervals[0].1;
+        for &(start, end) in &intervals[1..] {
+            if last < start {
+                res.push(last as i32);
+            }
+            last = last.max(end);
+        }
+        res.push(last as i32);
+        res.windows(2).map(|w| w[1] - w[0]).collect()
+    }
+
     pub fn partition_labels_with_bit(s: String) -> Vec<i32> {
         let s: Vec<u32> = s
             .bytes()
