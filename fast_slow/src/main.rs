@@ -1,16 +1,16 @@
-use rand::prelude::*;
+// use rand::prelude::*;
 use std::thread;
 
 fn main() {
-    for _ in 0..10000000 {
-        thread::spawn(|| run());
+    for step in 10..1000000 {
+        thread::spawn(move || run(step));
     }
 }
 
-fn run() {
-    let mut rng = thread_rng();
+fn run(l: u32) {
+    // let mut rng = thread_rng();
 
-    let loop_length = rng.gen_range(0..1000000);
+    let loop_length = l;
 
     let fast_speed = 2;
     // let fast_speed = rng.gen_range(0..loop_length / 2);
