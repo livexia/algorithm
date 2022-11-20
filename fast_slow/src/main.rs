@@ -2,7 +2,7 @@
 use std::thread;
 
 fn main() {
-    for step in 10..1000000 {
+    for step in 10..10000 {
         thread::spawn(move || run(step));
     }
 }
