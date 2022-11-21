@@ -1,10 +1,12 @@
 // use rand::prelude::*;
-use std::thread;
+use tokio::runtime;
 
-fn main() {
-    for step in 10..10000 {
-        thread::spawn(move || run(step));
+fn main() -> std::io::Result<()> {
+    let thread_rt = runtime::Runtime::new()?;
+    for step in 10..1000000 {
+        thread_rt.spawn(async move { run(step) });
     }
+    Ok(())
 }
 
 fn run(l: u32) {
