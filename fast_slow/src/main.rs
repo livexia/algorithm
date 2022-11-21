@@ -3,7 +3,7 @@ use tokio::runtime;
 
 fn main() -> std::io::Result<()> {
     let thread_rt = runtime::Runtime::new()?;
-    for step in 10..1000000 {
+    for step in 10..10000000 {
         thread_rt.spawn(async move { run(step) });
     }
     Ok(())
