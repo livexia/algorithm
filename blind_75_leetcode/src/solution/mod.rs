@@ -41,3 +41,4 @@ mod s0452_minimum_number_of_arrows_to_burst_balloons;
 mod s0715_range_module;
 mod s0763_partition_labels;
 mod s0986_interval_list_intersections;
+mod s0206_reverse_linked_list;
