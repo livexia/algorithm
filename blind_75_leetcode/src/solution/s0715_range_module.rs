@@ -1,6 +1,5 @@
 #![allow(dead_code)]
 
-use std::f32::consts::E;
 struct RangeModule {
     range: Option<(i32, i32)>,
     next: Option<Box<RangeModule>>,
@@ -33,7 +32,6 @@ impl RangeModule {
                 use std::mem::swap;
                 swap(&mut temp_r, self);
                 self.next = Some(Box::new(temp_r));
-                return;
             } else if left > end {
                 if self.next.is_none() {
                     self.next = Some(Box::new(RangeModule::with_range(left, right)))
@@ -146,8 +144,7 @@ impl RangeModuleWithVec {
             Ok(n) => n + 1,
         };
         if start == end {
-            self.list.insert(start, (left, right));
-            return;
+            self.list.insert(start, (left, right))
         }
         let left = left.min(self.list[start].0);
         let right = right.max(self.list[end - 1].1);
@@ -209,7 +206,6 @@ impl RangeModuleWithVec {
 #[cfg(test)]
 mod tests_715 {
     use super::RangeModuleWithVec as RangeModule;
-    use super::*;
     use crate::leetcode_vec;
 
     fn helper(calls: Vec<&str>, args: Vec<Vec<i32>>) -> Vec<Option<bool>> {

@@ -46,7 +46,7 @@ impl Solution {
             }
             let mut visited = vec![false; vars.len()];
             match Solution::dfs(
-                &adjacency_list,
+                adjacency_list,
                 *vars.get(&q[0]).unwrap(),
                 *vars.get(&q[1]).unwrap(),
                 &mut visited,
@@ -72,9 +72,8 @@ impl Solution {
                 if visited[possible_d] {
                     continue;
                 }
-                match Solution::dfs(adjacency_list, possible_d, divisor, visited) {
-                    Ok(f) => return Ok(v * f),
-                    Err(_) => (),
+                if let Ok(f) = Solution::dfs(adjacency_list, possible_d, divisor, visited) {
+                    return Ok(v * f);
                 }
             }
         }
@@ -116,7 +115,7 @@ impl Solution {
 
     fn union_find(
         vars: &HashMap<&String, usize>,
-        equations: &Vec<Vec<String>>,
+        equations: &[Vec<String>],
         values: Vec<f64>,
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {
@@ -184,7 +183,7 @@ impl Solution {
 
     fn floyd(
         vars: &HashMap<&String, usize>,
-        equations: &Vec<Vec<String>>,
+        equations: &[Vec<String>],
         values: Vec<f64>,
         queries: Vec<Vec<String>>,
     ) -> Vec<f64> {

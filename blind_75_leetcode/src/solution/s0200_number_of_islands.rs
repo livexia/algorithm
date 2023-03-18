@@ -9,9 +9,9 @@ impl Solution {
         let mut grid = grid;
         let mut count = 0;
         let mut union_find = vec![];
-        for i in 0..m {
-            for j in 0..n {
-                if grid[i][j] == '1' {
+        for (i, row) in grid.iter().enumerate() {
+            for (j, &c) in row.iter().enumerate() {
+                if c == '1' {
                     union_find.push(i * n + j);
                     count += 1;
                 } else {
@@ -78,9 +78,7 @@ impl Solution {
         let mut root_b = Solution::find(union_find, b);
         if root_a != root_b {
             if rank[root_a] < rank[root_b] {
-                let temp = root_a;
-                root_a = root_b;
-                root_b = temp;
+                std::mem::swap(&mut root_a, &mut root_b);
             }
             union_find[root_b] = root_a;
             if rank[root_a] == rank[root_b] {

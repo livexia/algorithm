@@ -9,14 +9,14 @@ impl Solution {
 
         let mut tail = vec![nums[0]];
 
-        for i in 1..nums.len() {
-            if &nums[i] > tail.last().unwrap() {
-                tail.push(nums[i])
+        for n in nums.iter() {
+            if n > tail.last().unwrap() {
+                tail.push(*n)
             } else {
-                match Solution::binary_search(&tail, &nums[i]) {
+                match Solution::binary_search(&tail, n) {
                     // match tail.binary_search(&nums[i]) {
                     Ok(_) => (),
-                    Err(j) => tail[j] = nums[i],
+                    Err(j) => tail[j] = *n,
                 }
             }
         }
@@ -28,12 +28,10 @@ impl Solution {
         let mut right = v.len() - 1;
         while left < right {
             let mid = (left + right) >> 1;
-            if x == &v[mid] {
-                return Ok(mid);
-            } else if x < &v[mid] {
-                right = mid;
-            } else {
-                left = mid + 1;
+            match x.cmp(&v[mid]) {
+                std::cmp::Ordering::Equal => return Ok(mid),
+                std::cmp::Ordering::Less => right = mid,
+                std::cmp::Ordering::Greater => left = mid + 1,
             }
         }
         Err(left)

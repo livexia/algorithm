@@ -35,7 +35,7 @@ fn main() -> Result<()> {
     );
     write_template_code(
         &gen_template_code(&read_template().unwrap(), &args.id),
-        &path,
+        path,
     )?;
     insert_mod(&format!("s{:0>4}_{}", args.id, args.name))
 }
@@ -86,12 +86,12 @@ fn parse_name(name: &str) -> ::std::result::Result<String, String> {
     // remove international url
     let name = name.replace("https://leetcode.com/problems/", "");
     // remove /
-    let name = name.replace("/", "");
+    let name = name.replace('/', "");
     // remove whitespace
     let name = name.trim();
 
     // replace - with _ with name input
-    Ok(name.replace("-", "_"))
+    Ok(name.replace('-', "_"))
 
     // ToDo: More Validated
 }

@@ -31,7 +31,7 @@ impl Solution {
         // println!("b: {:#034b}", b);
         while b != 0 {
             let carry = (a & b) << 1;
-            a = a ^ b;
+            a ^= b;
             b = carry;
             // println!("a ^ b        {:#034b}", a);
             // println!("(a & b) << 1 {:#034b}", carry);

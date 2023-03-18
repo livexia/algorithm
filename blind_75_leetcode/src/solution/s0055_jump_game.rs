@@ -8,9 +8,9 @@ impl Solution {
             return true;
         }
         let mut max = nums[0];
-        for i in 1..l {
+        for (i, num) in nums.iter().enumerate() {
             if i as i32 <= max {
-                max = max.max(nums[i] + i as i32);
+                max = max.max(num + i as i32);
                 if max as usize >= l - 1 {
                     return true;
                 }

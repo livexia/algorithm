@@ -16,7 +16,7 @@ impl Solution {
         if let Some(node) = visited.get(&node.val) {
             return node.clone();
         }
-        let val = node.val.clone();
+        let val = node.val;
         let neighbors = node
             .neighbors
             .iter()

@@ -96,13 +96,10 @@ impl Solution {
         let mut chars: Vec<HashSet<u8>> = vec![HashSet::new(); word_length];
         for word in &word_list {
             for (i, c) in word.bytes().enumerate() {
-                chars[i].insert(c - 'a' as u8);
+                chars[i].insert(c - b'a');
             }
         }
-        let word_list: HashSet<u64> = word_list
-            .into_iter()
-            .map(|s| Solution::word_to_num(s))
-            .collect();
+        let word_list: HashSet<u64> = word_list.into_iter().map(Solution::word_to_num).collect();
         let end_word = Solution::word_to_num(end_word);
         let begin_word = Solution::word_to_num(begin_word);
         if !word_list.contains(&end_word) {
@@ -115,9 +112,9 @@ impl Solution {
             if cur == end_word {
                 return count;
             }
-            if visited.insert(cur.clone()) {
-                for i in 0..word_length {
-                    for &c in &chars[i] {
+            if visited.insert(cur) {
+                for (i, item) in chars.iter().enumerate() {
+                    for &c in item {
                         let next = Solution::replace_at(cur, c, i, word_length);
                         if cur == next {
                             continue;
@@ -134,7 +131,7 @@ impl Solution {
     }
 
     fn word_to_vec(word: String) -> Vec<u8> {
-        word.bytes().map(|c| c as u8 - 'a' as u8 + 1).collect()
+        word.bytes().map(|c| c - b'a' + 1).collect()
     }
 
     fn vec_to_num(word: Vec<u8>) -> u64 {
@@ -143,7 +140,7 @@ impl Solution {
 
     fn word_to_num(word: String) -> u64 {
         word.bytes()
-            .map(|c| c as u8 - 'a' as u8 + 1)
+            .map(|c| c - b'a' + 1)
             .fold(0, |sum, i| sum * 27 + i as u64)
     }
 

@@ -72,8 +72,7 @@ impl Solution {
         }
 
         let mut queue: VecDeque<(usize, usize)> = (0..m)
-            .map(|i| (0..n).map(move |j| (i, j)))
-            .flatten()
+            .flat_map(|i| (0..n).map(move |j| (i, j)))
             .filter(|&(i, j)| out_degrees[i][j] == 0)
             .collect();
 

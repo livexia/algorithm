@@ -9,12 +9,10 @@ impl Solution {
             let mid = (left + right) >> 1;
             if nums[left] < nums[right] {
                 return nums[left];
+            } else if nums[left] > nums[mid] {
+                right = mid;
             } else {
-                if nums[left] > nums[mid] {
-                    right = mid;
-                } else {
-                    left = mid + 1;
-                }
+                left = mid + 1;
             }
         }
         nums[right]

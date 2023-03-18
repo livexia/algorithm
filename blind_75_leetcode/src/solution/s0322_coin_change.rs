@@ -7,7 +7,7 @@ impl Solution {
             return 0;
         }
         let amount = amount as usize;
-        let mut dp = vec![amount + 1; amount as usize + 1];
+        let mut dp = vec![amount + 1; amount + 1];
         dp[0] = 0;
         for i in 0..=amount {
             for &c in &coins {
@@ -42,7 +42,7 @@ impl Solution {
         let mut min = -1;
         for c in coins {
             let res = Solution::dp(coins, remain - c, visited);
-            if (res >= 0 && res + 1 < min) || (res >= 0 && min == -1) {
+            if res >= 0 && (res + 1 < min || min == -1) {
                 min = res + 1;
             }
         }

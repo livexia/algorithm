@@ -11,7 +11,7 @@ impl Solution {
         let n = n as usize;
         for _ in 2..=n {
             let temp = last_count;
-            last_count = last_count + before_last_count;
+            last_count += before_last_count;
             before_last_count = temp;
         }
         last_count

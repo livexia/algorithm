@@ -15,11 +15,7 @@ impl Solution {
 
     pub fn partition_labels_with_last_pos(s: String) -> Vec<i32> {
         let mut last = vec![0; 26];
-        let s: Vec<(usize, usize)> = s
-            .bytes()
-            .map(|c| (c - 'a' as u8) as usize)
-            .enumerate()
-            .collect();
+        let s: Vec<(usize, usize)> = s.bytes().map(|c| (c - b'a') as usize).enumerate().collect();
         for &(i, c) in &s {
             last[c] = i;
         }
@@ -37,7 +33,7 @@ impl Solution {
 
     pub fn partition_labels_with_interval(s: String) -> Vec<i32> {
         let mut pos = vec![26; 26];
-        let s: Vec<u8> = s.bytes().map(|b| b - 'a' as u8).collect();
+        let s: Vec<u8> = s.bytes().map(|b| b - b'a').collect();
         let mut intervals = vec![];
         for (i, c) in s.into_iter().enumerate() {
             if pos[c as usize] == 26 {
@@ -60,11 +56,7 @@ impl Solution {
     }
 
     pub fn partition_labels_with_bit(s: String) -> Vec<i32> {
-        let s: Vec<u32> = s
-            .bytes()
-            .into_iter()
-            .map(|b| 1 << (b - 'a' as u8))
-            .collect();
+        let s: Vec<u32> = s.bytes().map(|b| 1 << (b - b'a')).collect();
         let mut shown = vec![s[0]];
         let mut counts = vec![0];
         for c in s {

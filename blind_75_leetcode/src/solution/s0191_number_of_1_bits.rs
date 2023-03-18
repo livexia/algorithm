@@ -10,7 +10,7 @@ impl Solution {
             n &= n - 1;
             count += 1;
         }
-        count as i32
+        count
     }
 }
 

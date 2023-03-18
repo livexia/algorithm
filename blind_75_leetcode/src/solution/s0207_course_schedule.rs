@@ -29,9 +29,9 @@ impl Solution {
         use std::collections::VecDeque;
 
         let mut queue = VecDeque::new();
-        for c in 0..num_courses {
-            if inedge[c] == 0 {
-                queue.push_back(c)
+        for (i, &c) in inedge.iter().enumerate().take(num_courses) {
+            if c == 0 {
+                queue.push_back(i)
             }
         }
         let mut visited = 0;
@@ -51,9 +51,7 @@ impl Solution {
     fn dfs(cur: usize, graph: &[Vec<usize>], visited: &mut [u8]) -> bool {
         visited[cur] = 1;
         for &next in &graph[cur] {
-            if visited[next] == 0 && !Solution::dfs(next, graph, visited) {
-                return false;
-            } else if visited[next] == 1 {
+            if visited[next] == 0 && !Solution::dfs(next, graph, visited) || visited[next] == 1 {
                 return false;
             }
         }

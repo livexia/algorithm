@@ -34,7 +34,7 @@ impl ListNode {
         let mut v = vec![];
         while let Some(next) = &cur.next {
             v.push(cur.val);
-            cur = &next;
+            cur = next;
         }
         v.push(cur.val);
         v
