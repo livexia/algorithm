@@ -47,39 +47,22 @@ impl Solution {
         mut list1: Option<Box<ListNode>>,
         mut list2: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
-        let mut head = Some(Box::new(ListNode::new(0)));
+        let mut head = ListNode::new(0);
         let mut cur = &mut head;
-        while list1.is_some() && list2.is_some() {
-            if let Some(mut n1) = list1.take() {
-                if let Some(mut n2) = list2.take() {
-                    if let Some(inner_cur) = cur {
-                        if n1.val < n2.val {
-                            list1 = n1.next.take();
-                            list2 = Some(n2);
-                            inner_cur.next = Some(n1);
-                        } else {
-                            list2 = n2.next.take();
-                            list1 = Some(n1);
-                            inner_cur.next = Some(n2);
-                        }
-                        cur = &mut inner_cur.next;
-                    }
-                }
-            }
+
+        while let (Some(l1), Some(l2)) = (list1.as_ref(), list2.as_ref()) {
+            let l = if l1.val <= l2.val {
+                &mut list1
+            } else {
+                &mut list2
+            };
+            cur.next = l.take();
+            cur = cur.next.as_mut().unwrap();
+            *l = cur.next.take();
         }
-        if let Some(inner_cur) = cur {
-            if list1.is_some() {
-                inner_cur.next = list1
-            }
-            if list2.is_some() {
-                inner_cur.next = list2
-            }
-        }
-        if let Some(head) = head {
-            head.next
-        } else {
-            None
-        }
+
+        cur.next = list1.or(list2);
+        head.next
     }
 }
 
