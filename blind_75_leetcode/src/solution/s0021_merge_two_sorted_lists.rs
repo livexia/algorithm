@@ -66,6 +66,28 @@ impl Solution {
     }
 }
 
+impl Solution {
+    pub fn merge_two_lists_recursion(
+        list1: Option<Box<ListNode>>,
+        list2: Option<Box<ListNode>>,
+    ) -> Option<Box<ListNode>> {
+        match (list1, list2) {
+            (None, None) => None,
+            (l1, None) => l1,
+            (None, l2) => l2,
+            (Some(mut n1), Some(mut n2)) => {
+                if n1.val <= n2.val {
+                    n1.next = Solution::merge_two_lists_recursion(n1.next, Some(n2));
+                    Some(n1)
+                } else {
+                    n2.next = Solution::merge_two_lists_recursion(Some(n1), n2.next);
+                    Some(n2)
+                }
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests_21 {
     use super::*;
@@ -76,6 +98,15 @@ mod tests_21 {
         let l2 = ListNode::from_vec(vec![1, 3, 4]);
         assert_eq!(
             Solution::merge_two_lists(l1, l2).unwrap().to_vec(),
+            vec![1, 1, 2, 3, 4, 4]
+        );
+
+        let l1 = ListNode::from_vec(vec![1, 2, 4]);
+        let l2 = ListNode::from_vec(vec![1, 3, 4]);
+        assert_eq!(
+            Solution::merge_two_lists_recursion(l1, l2)
+                .unwrap()
+                .to_vec(),
             vec![1, 1, 2, 3, 4, 4]
         );
     }
