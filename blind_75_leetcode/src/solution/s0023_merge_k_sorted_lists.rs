@@ -51,6 +51,25 @@ impl Solution {
         head
     }
 
+    pub fn merge_k_lists_divide_and_conqure(
+        lists: Vec<Option<Box<ListNode>>>,
+    ) -> Option<Box<ListNode>> {
+        let mut lists = lists;
+        while lists.len() != 1 {
+            lists = lists
+                .chunks_mut(2)
+                .map(|v| {
+                    if v.len() == 2 {
+                        Solution::merge_two_lists(v[0].take(), v[1].take())
+                    } else {
+                        v[0].take()
+                    }
+                })
+                .collect()
+        }
+        lists.pop().unwrap_or(None)
+    }
+
     fn merge_two_lists(
         mut l1: Option<Box<ListNode>>,
         mut l2: Option<Box<ListNode>>,
@@ -84,6 +103,16 @@ mod tests_23 {
             .collect();
         assert_eq!(
             Solution::merge_k_lists(lists).unwrap().to_vec(),
+            vec![1, 1, 2, 3, 4, 4, 5, 6]
+        );
+        let lists = vec![vec![1, 4, 5], vec![1, 3, 4], vec![2, 6]]
+            .into_iter()
+            .map(|v| ListNode::from_vec(v))
+            .collect();
+        assert_eq!(
+            Solution::merge_k_lists_divide_and_conqure(lists)
+                .unwrap()
+                .to_vec(),
             vec![1, 1, 2, 3, 4, 4, 5, 6]
         );
     }
