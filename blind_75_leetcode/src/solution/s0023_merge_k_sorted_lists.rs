@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+
+use std::collections::BinaryHeap;
 pub struct Solution {}
 
 // Definition for singly-linked list.
@@ -42,7 +44,6 @@ impl ListNode {
 }
 
 impl Solution {
-    // This is a template
     pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
         let mut head = None;
         for l in lists {
@@ -68,6 +69,24 @@ impl Solution {
                 .collect()
         }
         lists.pop().unwrap_or(None)
+    }
+
+    pub fn merge_k_lists_max_heap(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
+        let mut heap = BinaryHeap::new();
+        for list in lists {
+            let mut node = list;
+            while let Some(inner_node) = node {
+                heap.push(inner_node.val);
+                node = inner_node.next;
+            }
+        }
+        let mut head = None;
+        while let Some(v) = heap.pop() {
+            let mut temp = ListNode::new(v);
+            temp.next = head;
+            head = Some(Box::new(temp));
+        }
+        head
     }
 
     fn merge_two_lists(
@@ -113,6 +132,14 @@ mod tests_23 {
             Solution::merge_k_lists_divide_and_conqure(lists)
                 .unwrap()
                 .to_vec(),
+            vec![1, 1, 2, 3, 4, 4, 5, 6]
+        );
+        let lists = vec![vec![1, 4, 5], vec![1, 3, 4], vec![2, 6]]
+            .into_iter()
+            .map(|v| ListNode::from_vec(v))
+            .collect();
+        assert_eq!(
+            Solution::merge_k_lists_max_heap(lists).unwrap().to_vec(),
             vec![1, 1, 2, 3, 4, 4, 5, 6]
         );
     }
