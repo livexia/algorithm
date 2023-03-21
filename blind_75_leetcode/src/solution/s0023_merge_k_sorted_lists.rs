@@ -89,6 +89,23 @@ impl Solution {
         head
     }
 
+    pub fn merge_k_lists_min_heap(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
+        let mut heap = BinaryHeap::new();
+        for list in lists.into_iter().flatten() {
+            heap.push(list);
+        }
+        let mut head = ListNode::new(0);
+        let mut cur = &mut head;
+        while let Some(mut l) = heap.pop() {
+            if let Some(n) = l.next.take() {
+                heap.push(n);
+            }
+            cur.next = Some(l);
+            cur = cur.next.as_mut().unwrap();
+        }
+        head.next
+    }
+
     fn merge_two_lists(
         mut l1: Option<Box<ListNode>>,
         mut l2: Option<Box<ListNode>>,
@@ -107,6 +124,18 @@ impl Solution {
             }
             _ => l1.or(l2),
         }
+    }
+}
+
+impl Ord for ListNode {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        other.val.cmp(&self.val)
+    }
+}
+
+impl PartialOrd for ListNode {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -140,6 +169,14 @@ mod tests_23 {
             .collect();
         assert_eq!(
             Solution::merge_k_lists_max_heap(lists).unwrap().to_vec(),
+            vec![1, 1, 2, 3, 4, 4, 5, 6]
+        );
+        let lists = vec![vec![1, 4, 5], vec![1, 3, 4], vec![2, 6]]
+            .into_iter()
+            .map(|v| ListNode::from_vec(v))
+            .collect();
+        assert_eq!(
+            Solution::merge_k_lists_min_heap(lists).unwrap().to_vec(),
             vec![1, 1, 2, 3, 4, 4, 5, 6]
         );
     }
