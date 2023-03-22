@@ -43,33 +43,24 @@ impl ListNode {
 
 impl Solution {
     pub fn remove_nth_from_end(mut head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
-        let mut temp_head = head.as_ref();
         let mut count = 0;
-
         let mut cur = head.as_ref();
         while let Some(inner) = cur {
             cur = inner.next.as_ref();
-            if count > n {
-                if let Some(inner_head) = temp_head {
-                    temp_head = inner_head.next.as_ref()
-                }
-            }
             count += 1;
         }
-        println!("{:?}", temp_head);
-        println!("{:?}", head);
+        // we can sure that the length of linked list is count
+        // so use unwrap is fine
         if count == n {
-            if let Some(inner) = head.take() {
-                return inner.next;
-            }
-        } else if let Some(inner) = temp_head.as_mut() {
-            // if let Some(next) = inner.next.take() {
-            // inner.next = next.next;
-            // } else {
-            // return None;
-            // }
+            return head.as_mut().unwrap().next.take();
         }
-        None
+        let mut cur = head.as_mut().unwrap();
+        for _ in 0..count - n - 1 {
+            cur = cur.next.as_mut().unwrap();
+        }
+        cur.next = cur.next.take().unwrap().next;
+
+        head
     }
 }
 
@@ -89,7 +80,7 @@ mod tests_19 {
         let list = ListNode::from_vec(vec![1, 2]);
         assert_eq!(
             Solution::remove_nth_from_end(list, 1).unwrap().to_vec(),
-            vec![2]
+            vec![1]
         );
         let list = ListNode::from_vec(vec![1, 2]);
         assert_eq!(
