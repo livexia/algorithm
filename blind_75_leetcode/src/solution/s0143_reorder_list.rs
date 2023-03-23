@@ -71,6 +71,58 @@ impl Solution {
     }
 }
 
+pub struct Solution2 {}
+
+impl Solution2 {
+    pub fn reorder_list(head: &mut Option<Box<ListNode>>) {
+        let middle = Solution2::reverse_list(Solution2::middle_list(head));
+        Solution2::merger_list(head, middle);
+    }
+
+    fn list_length(head: &Option<Box<ListNode>>) -> usize {
+        let mut count = 0;
+        let mut cur = head;
+        while let Some(node) = cur {
+            cur = &node.next;
+            count += 1;
+        }
+        count
+    }
+
+    fn middle_list(head: &mut Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let count = Solution2::list_length(head);
+
+        let mut cur = head;
+        for _ in 0..count / 2 + 1 {
+            // maker sure head is longer than other
+            cur = &mut cur.as_mut().unwrap().next;
+        }
+        cur.take()
+    }
+
+    fn reverse_list(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut dummy = None;
+        while let Some(mut node) = head.take() {
+            let temp = node.next.take();
+            node.next = dummy;
+            head = temp;
+            dummy = Some(node);
+        }
+        dummy
+    }
+
+    fn merger_list(head: &mut Option<Box<ListNode>>, mut other: Option<Box<ListNode>>) {
+        let mut head_ptr = head;
+        while head_ptr.is_some() && other.is_some() {
+            let temp = other.as_mut().unwrap().next.take();
+            other.as_mut().unwrap().next = head_ptr.as_mut().unwrap().next.take();
+            head_ptr.as_mut().unwrap().next = other;
+            head_ptr = &mut head_ptr.as_mut().unwrap().next.as_mut().unwrap().next;
+            other = temp;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests_143 {
     use super::*;
@@ -79,6 +131,10 @@ mod tests_143 {
     fn it_works() {
         let mut head = ListNode::from_vec(vec![1, 2, 3, 4, 5]);
         Solution::reorder_list(&mut head);
+        assert_eq!(head.unwrap().to_vec(), vec![1, 5, 2, 4, 3]);
+
+        let mut head = ListNode::from_vec(vec![1, 2, 3, 4, 5]);
+        Solution2::reorder_list(&mut head);
         assert_eq!(head.unwrap().to_vec(), vec![1, 5, 2, 4, 3]);
     }
 }
