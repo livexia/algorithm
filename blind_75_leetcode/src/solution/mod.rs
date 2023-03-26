@@ -48,3 +48,4 @@ mod s0019_remove_nth_node_from_end_of_list;
 mod s0143_reorder_list;
 mod s0073_set_matrix_zeroes;
 mod s0054_spiral_matrix;
+mod s0048_rotate_image;
