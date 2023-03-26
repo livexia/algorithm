@@ -49,3 +49,4 @@ mod s0143_reorder_list;
 mod s0073_set_matrix_zeroes;
 mod s0054_spiral_matrix;
 mod s0048_rotate_image;
+mod s0079_word_search;
