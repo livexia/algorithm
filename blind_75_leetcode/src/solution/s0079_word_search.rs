@@ -3,24 +3,48 @@ pub struct Solution {}
 
 impl Solution {
     pub fn exist(board: Vec<Vec<char>>, word: String) -> bool {
-        todo!()
+        let word: Vec<_> = word.chars().collect();
+        let mut visited = vec![vec![false; board[0].len()]; board.len()];
+        for x in 0..board.len() {
+            for y in 0..board[0].len() {
+                if Solution::dfs(x, y, 0, &word, &board, &mut visited) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
-    fn dfs(x: usize, y: usize, word: &[char], mut matched: usize, board: &[Vec<char>]) -> bool {
-        if matched >= word.len() {
+    fn dfs(
+        x: usize,
+        y: usize,
+        matched: usize,
+        word: &[char],
+        board: &[Vec<char>],
+        visited: &mut [Vec<bool>],
+    ) -> bool {
+        if board[x][y] != word[matched] {
+            return false;
+        }
+        if matched == word.len() - 1 {
             return true;
         }
-        if word[matched] == board[x][y] {
-            matched += 1;
-        } else {
-            matched = 0;
-        }
+        visited[x][y] = true;
+        let result = (x > 0
+            && !visited[x - 1][y]
+            && Solution::dfs(x - 1, y, matched + 1, word, board, visited))
+            || (x < board.len() - 1
+                && !visited[x + 1][y]
+                && Solution::dfs(x + 1, y, matched + 1, word, board, visited))
+            || (y > 0
+                && !visited[x][y - 1]
+                && Solution::dfs(x, y - 1, matched + 1, word, board, visited))
+            || (y < board[0].len() - 1
+                && !visited[x][y + 1]
+                && Solution::dfs(x, y + 1, matched + 1, word, board, visited));
 
-        if x > 0 && Solution::dfs(x - 1, y, word, matched, board) {}
-        if x < board.len() - 1 && Solution::dfs(x + 1, y, word, matched, board) {}
-        if y > 0 && Solution::dfs(x, y - 1, word, matched, board) {}
-        if y < board[0].len() - 1 && Solution::dfs(x, y + 1, word, matched, board) {}
-        todo!()
+        visited[x][y] = false;
+        result
     }
 }
 
