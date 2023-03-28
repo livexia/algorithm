@@ -1,4 +1,5 @@
 from typing import List
+import unittest
 
 
 class Solution:
@@ -28,9 +29,6 @@ class Solution:
                     return True
 
         return False
-
-
-import unittest
 
 
 class TestWordSearch(unittest.TestCase):
