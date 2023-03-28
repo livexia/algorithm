@@ -28,3 +28,51 @@ class Solution:
                     return True
 
         return False
+
+
+import unittest
+
+
+class TestWordSearch(unittest.TestCase):
+    def test_it_works(self):
+        s = Solution()
+        self.assertTrue(
+            s.exist(
+                board=[
+                    ["A", "B", "C", "E"],
+                    ["S", "F", "C", "S"],
+                    ["A", "D", "E", "E"],
+                ],
+                word="ABCCED",
+            )
+        )
+
+    def test_example2(self):
+        s = Solution()
+        self.assertTrue(
+            s.exist(
+                board=[
+                    ["A", "B", "C", "E"],
+                    ["S", "F", "C", "S"],
+                    ["A", "D", "E", "E"],
+                ],
+                word="SEE",
+            )
+        )
+
+    def test_example3(self):
+        s = Solution()
+        self.assertFalse(
+            s.exist(
+                board=[
+                    ["A", "B", "C", "E"],
+                    ["S", "F", "C", "S"],
+                    ["A", "D", "E", "E"],
+                ],
+                word="ABCB",
+            )
+        )
+
+
+# if __name__ == "__main__":
+# unittest.main()
