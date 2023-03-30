@@ -50,3 +50,4 @@ mod s0073_set_matrix_zeroes;
 mod s0054_spiral_matrix;
 mod s0048_rotate_image;
 mod s0079_word_search;
+mod s0003_longest_substring_without_repeating_characters;
