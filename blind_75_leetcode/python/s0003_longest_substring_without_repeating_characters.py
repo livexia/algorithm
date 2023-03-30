@@ -3,15 +3,17 @@ import unittest
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        left = right = result = 0
-        while right < len(s):
-            if s[right] in s[left:right]:
+        left = result = 0
+        n = len(s)
+        for (right, c) in enumerate(s):
+            if left + result >= n:
+                return result
+            if c in s[left:right]:
                 result = max(result, right - left)
                 while s[left] != s[right]:
                     left += 1
                 left += 1
-            right += 1
-        result = max(result, right - left)
+        result = max(result, n - left)
         return result
 
 
