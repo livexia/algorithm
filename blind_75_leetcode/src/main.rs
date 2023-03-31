@@ -24,19 +24,26 @@ struct Args {
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    let path_string = format!("./src/solution/s{:0>4}_{}.rs", args.id, args.name);
-    let path = Path::new(&path_string);
-    if path.exists() {
-        return err!("File {} exists, do nothing.", path_string);
+    let rs_path_string = format!("./src/solution/s{:0>4}_{}.rs", args.id, args.name);
+    let py_path_string = format!("./python/s{:0>4}_{}.py", args.id, args.name);
+    let rs_path = Path::new(&rs_path_string);
+    let py_path = Path::new(&py_path_string);
+    if rs_path.exists() {
+        return err!("File {} exists, do nothing.", rs_path_string);
+    }
+    if py_path.exists() {
+        return err!("File {} exists, do nothing.", py_path_string);
     }
     println!(
-        "gen problem id: {}, name: {} at: {}",
-        args.id, args.name, path_string
+        "gen problem id: {}, name: {}, \nRust at: {}\nPython at: {}",
+        args.id, args.name, rs_path_string, py_path_string
     );
     write_template_code(
         &gen_template_code(&read_template().unwrap(), &args.id),
-        path,
+        rs_path,
     )?;
+
+    write_template_code("", py_path)?;
     insert_mod(&format!("s{:0>4}_{}", args.id, args.name))
 }
 
