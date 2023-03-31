@@ -51,3 +51,4 @@ mod s0054_spiral_matrix;
 mod s0048_rotate_image;
 mod s0079_word_search;
 mod s0003_longest_substring_without_repeating_characters;
+mod s0424_longest_repeating_character_replacement;
