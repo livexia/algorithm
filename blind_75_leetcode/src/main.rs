@@ -24,31 +24,43 @@ struct Args {
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    let rs_path_string = format!("./src/solution/s{:0>4}_{}.rs", args.id, args.name);
-    let py_path_string = format!("./python/s{:0>4}_{}.py", args.id, args.name);
-    let rs_path = Path::new(&rs_path_string);
-    let py_path = Path::new(&py_path_string);
-    if rs_path.exists() {
-        return err!("File {} exists, do nothing.", rs_path_string);
-    }
-    if py_path.exists() {
-        return err!("File {} exists, do nothing.", py_path_string);
-    }
-    println!(
-        "gen problem id: {}, name: {}, \nRust at: {}\nPython at: {}",
-        args.id, args.name, rs_path_string, py_path_string
-    );
-    write_template_code(
-        &gen_template_code(&read_template().unwrap(), &args.id),
-        rs_path,
-    )?;
-
-    write_template_code("", py_path)?;
-    insert_mod(&format!("s{:0>4}_{}", args.id, args.name))
+    create_file_for_solution("rust", &args.id, &args.name)?;
+    create_file_for_solution("python", &args.id, &args.name)?;
+    Ok(())
 }
 
-fn read_template() -> Result<String> {
-    match fs::read_to_string("./template.rs") {
+fn create_file_for_solution(lang: &str, id: &str, name: &str) -> Result<()> {
+    let (path_string, update_mode, template_str) = if lang == "rust" {
+        (
+            format!("./src/solution/s{:0>4}_{}.rs", id, name),
+            true,
+            "./template.rs",
+        )
+    } else if lang == "python" {
+        (
+            format!("./python/s{:0>4}_{}.py", id, name),
+            false,
+            "./template.py",
+        )
+    } else {
+        return err!("Unsupported language type: {lang}");
+    };
+    let path = Path::new(&path_string);
+    if path.exists() {
+        return err!("Language: {lang} file {} exists, do nothing.", path_string);
+    }
+    write_template_code(
+        &gen_template_code(&read_template(template_str).unwrap(), id),
+        path,
+    )?;
+    if update_mode {
+        insert_mod(&format!("s{:0>4}_{}", id, name))?;
+    }
+    Ok(())
+}
+
+fn read_template(template_str: &str) -> Result<String> {
+    match fs::read_to_string(template_str) {
         Ok(s) => Ok(s),
         Err(e) => err!("Problem reading the template file: {:?}", e),
     }
