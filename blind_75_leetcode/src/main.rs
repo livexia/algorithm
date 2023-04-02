@@ -72,7 +72,10 @@ fn gen_template_code(template: &str, problem_id: &str) -> String {
 
 fn write_template_code(code: &str, path: &Path) -> Result<()> {
     match fs::write(path, code) {
-        Ok(s) => Ok(s),
+        Ok(s) => {
+            println!("write template to file: {path:?}");
+            Ok(s)
+        }
         Err(e) => err!("Problem writing the code template file: {:?}", e),
     }
 }
