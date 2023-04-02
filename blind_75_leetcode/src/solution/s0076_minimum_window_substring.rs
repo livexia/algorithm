@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 pub struct Solution {}
 
-use std::collections::HashMap;
+use std::collections::{hash_map::Entry::Occupied, HashMap};
 impl Solution {
     pub fn min_window(s: String, t: String) -> String {
         if s.len() < t.len() {
@@ -15,24 +15,28 @@ impl Solution {
         let s: Vec<_> = s.chars().collect();
         let (mut left, mut result) = (0, (0, s.len()));
         for (right, &c) in s.iter().enumerate() {
-            let c_count = hash.entry(c).or_insert(0);
-            if *c_count > 0 {
-                t_count -= 1;
+            if let Occupied(mut v) = hash.entry(c) {
+                let &c_count = v.get();
+                if c_count > 0 {
+                    t_count -= 1;
+                }
+                *v.get_mut() -= 1;
             }
-            *c_count -= 1;
 
             if t_count == 0 {
-                while let Some(&count) = hash.get(&s[left]) {
-                    if count == 0 {
-                        break;
+                loop {
+                    if let Occupied(mut v) = hash.entry(s[left]) {
+                        if v.get() == &0 {
+                            break;
+                        }
+                        *v.get_mut() += 1;
                     }
-                    *hash.entry(s[left]).or_insert(0) += 1;
                     left += 1;
                 }
                 if right - left < result.1 - result.0 {
                     result = (left, right)
                 }
-                *hash.entry(s[left]).or_insert(0) += 1;
+                hash.insert(s[left], 1);
                 t_count += 1;
                 left += 1;
             }
