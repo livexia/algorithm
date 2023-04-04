@@ -15,7 +15,7 @@ impl Solution {
             counter[b1] += 1;
             counter[b2] -= 1;
         }
-        counter.iter().filter(|&&i| i != 0).count() == 0
+        counter.into_iter().all(|i| i == 0)
     }
 }
 
