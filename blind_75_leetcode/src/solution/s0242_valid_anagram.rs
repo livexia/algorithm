@@ -7,14 +7,16 @@ impl Solution {
             return false;
         }
         let mut counter = [0; 26];
-        for (b1, b2) in s
-            .bytes()
-            .zip(t.bytes())
-            .map(|(b1, b2)| ((b1 - b'a') as usize, (b2 - b'a') as usize))
-        {
-            counter[b1] += 1;
-            counter[b2] -= 1;
-        }
+        // for (b1, b2) in s
+        // .bytes()
+        // .zip(t.bytes())
+        // .map(|(b1, b2)| ((b1 - b'a') as usize, (b2 - b'a') as usize))
+        // {
+        // counter[b1] += 1;
+        // counter[b2] -= 1;
+        // }
+        s.bytes().for_each(|b| counter[(b - b'a') as usize] += 1);
+        t.bytes().for_each(|b| counter[(b - b'a') as usize] -= 1);
         counter.into_iter().all(|i| i == 0)
     }
 }
