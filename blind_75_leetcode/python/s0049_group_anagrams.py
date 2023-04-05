@@ -2,9 +2,25 @@ import unittest
 from typing import List
 
 
+from collections import Counter
+
+
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        return []
+        counters = {str: Counter(str) for str in strs}
+        result = [[strs.pop()]]
+
+        while strs:
+            s = strs.pop()
+            flag = False
+            for group in result:
+                if counters[group[0]] == counters[s]:
+                    group.append(s)
+                    flag = True
+                    break
+            if not flag:
+                result.append([s])
+        return result
 
 
 class TestS49(unittest.TestCase):
@@ -22,9 +38,11 @@ class TestS49(unittest.TestCase):
             return True
 
         s = Solution()
-        self.assertEqual(
-            s.groupAnagrams(strs=["eat", "tea", "tan", "ate", "nat", "bat"]),
-            [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]],
+        self.assertTrue(
+            equal_helper(
+                s.groupAnagrams(strs=["eat", "tea", "tan", "ate", "nat", "bat"]),
+                [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]],
+            )
         )
         self.assertEqual(s.groupAnagrams(strs=[""]), [[""]])
         self.assertEqual(s.groupAnagrams(strs=["a"]), [["a"]])
