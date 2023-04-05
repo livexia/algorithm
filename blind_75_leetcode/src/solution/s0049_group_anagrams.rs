@@ -6,11 +6,15 @@ impl Solution {
         if strs.is_empty() {
             return vec![];
         }
+        let strs_counter = strs
+            .iter()
+            .map(|s| (s.clone(), Solution::str_counter(s)))
+            .collect::<std::collections::HashMap<String, _>>();
         let mut result = vec![vec![strs.pop().unwrap()]];
 
         'outer: while let Some(s) = strs.pop() {
             for group in result.iter_mut() {
-                if Solution::is_anagram(&group[0], &s) {
+                if strs_counter.get(&group[0]).unwrap() == strs_counter.get(&s).unwrap() {
                     group.push(s);
                     continue 'outer;
                 }
@@ -18,6 +22,12 @@ impl Solution {
             result.push(vec![s]);
         }
         result
+    }
+
+    fn str_counter(s: &str) -> [i32; 26] {
+        let mut counter = [0; 26];
+        s.bytes().for_each(|b| counter[(b - b'a') as usize] += 1);
+        counter
     }
 
     fn is_anagram(s: &str, t: &str) -> bool {
