@@ -1,19 +1,31 @@
 #![allow(dead_code)]
 pub struct Solution {}
 
+use std::{
+    collections::{hash_map::DefaultHasher, HashMap},
+    hash::{Hash, Hasher},
+};
+
 impl Solution {
     pub fn group_anagrams(strs: Vec<String>) -> Vec<Vec<String>> {
         if strs.is_empty() {
             return vec![];
         }
-        let mut strs_counter = std::collections::HashMap::new();
+        let mut strs_counter = HashMap::new();
         for s in strs {
             strs_counter
-                .entry(Solution::str_counter(&s))
+                .entry(Solution::str_counter_hash(&s))
                 .or_insert(vec![])
                 .push(s);
         }
         strs_counter.into_values().collect()
+    }
+
+    fn str_counter_hash(s: &str) -> u64 {
+        let counter = Solution::str_counter(s);
+        let mut hash = DefaultHasher::new();
+        counter.hash(&mut hash);
+        hash.finish()
     }
 
     fn str_counter(s: &str) -> [i32; 26] {
