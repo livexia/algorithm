@@ -2,25 +2,16 @@ import unittest
 from typing import List
 
 
-from collections import Counter
+from collections import defaultdict
 
 
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        counters = {str: Counter(str) for str in strs}
-        result = [[strs.pop()]]
+        counters = defaultdict(list)
+        for s in strs:
+            counters["".join(sorted(s))].append(s)
 
-        while strs:
-            s = strs.pop()
-            flag = False
-            for group in result:
-                if counters[group[0]] == counters[s]:
-                    group.append(s)
-                    flag = True
-                    break
-            if not flag:
-                result.append([s])
-        return result
+        return list(counters.values())
 
 
 class TestS49(unittest.TestCase):
