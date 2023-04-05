@@ -2,8 +2,33 @@
 pub struct Solution {}
 
 impl Solution {
-    pub fn group_anagrams(strs: Vec<String>) -> Vec<Vec<String>> {
-        todo!()
+    pub fn group_anagrams(mut strs: Vec<String>) -> Vec<Vec<String>> {
+        if strs.is_empty() {
+            return vec![];
+        }
+        let mut result = vec![vec![strs.pop().unwrap()]];
+
+        'outer: while let Some(s) = strs.pop() {
+            for group in result.iter_mut() {
+                if Solution::is_anagram(&group[0], &s) {
+                    group.push(s);
+                    continue 'outer;
+                }
+            }
+            result.push(vec![s]);
+        }
+        result
+    }
+
+    fn is_anagram(s: &str, t: &str) -> bool {
+        if s.len() != t.len() {
+            return false;
+        }
+        let mut counter = [0; 26];
+        s.bytes().for_each(|b| counter[(b - b'a') as usize] += 1);
+        t.bytes().for_each(|b| counter[(b - b'a') as usize] -= 1);
+
+        counter.iter().all(|&i| i == 0)
     }
 }
 
