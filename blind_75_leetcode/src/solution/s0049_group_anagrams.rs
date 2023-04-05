@@ -2,26 +2,18 @@
 pub struct Solution {}
 
 impl Solution {
-    pub fn group_anagrams(mut strs: Vec<String>) -> Vec<Vec<String>> {
+    pub fn group_anagrams(strs: Vec<String>) -> Vec<Vec<String>> {
         if strs.is_empty() {
             return vec![];
         }
-        let strs_counter = strs
-            .iter()
-            .map(|s| (s.clone(), Solution::str_counter(s)))
-            .collect::<std::collections::HashMap<String, _>>();
-        let mut result = vec![vec![strs.pop().unwrap()]];
-
-        'outer: while let Some(s) = strs.pop() {
-            for group in result.iter_mut() {
-                if strs_counter.get(&group[0]).unwrap() == strs_counter.get(&s).unwrap() {
-                    group.push(s);
-                    continue 'outer;
-                }
-            }
-            result.push(vec![s]);
+        let mut strs_counter = std::collections::HashMap::new();
+        for s in strs {
+            strs_counter
+                .entry(Solution::str_counter(&s))
+                .or_insert(vec![])
+                .push(s);
         }
-        result
+        strs_counter.into_values().collect()
     }
 
     fn str_counter(s: &str) -> [i32; 26] {
