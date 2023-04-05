@@ -54,3 +54,4 @@ mod s0003_longest_substring_without_repeating_characters;
 mod s0424_longest_repeating_character_replacement;
 mod s0076_minimum_window_substring;
 mod s0242_valid_anagram;
+mod s0049_group_anagrams;
