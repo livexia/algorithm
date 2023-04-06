@@ -56,3 +56,4 @@ mod s0076_minimum_window_substring;
 mod s0242_valid_anagram;
 mod s0049_group_anagrams;
 mod s0020_valid_parentheses;
+mod s0125_valid_palindrome;
