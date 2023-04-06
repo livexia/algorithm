@@ -3,21 +3,14 @@ pub struct Solution {}
 
 impl Solution {
     pub fn is_palindrome(s: String) -> bool {
-        let s: Vec<_> = s
-            .to_uppercase()
+        let mut chars = s
             .chars()
             .filter(|c| c.is_alphanumeric())
-            .collect();
-        if s.is_empty() {
-            return true;
-        }
-        let (mut left, mut right) = (0, s.len() - 1);
-        while left < right {
-            if s[left] != s[right] {
+            .map(|c| c.to_ascii_uppercase());
+        while let (Some(a), Some(b)) = (chars.next(), chars.next_back()) {
+            if a != b {
                 return false;
             }
-            left += 1;
-            right -= 1;
         }
         true
     }
