@@ -57,3 +57,4 @@ mod s0242_valid_anagram;
 mod s0049_group_anagrams;
 mod s0020_valid_parentheses;
 mod s0125_valid_palindrome;
+mod s0005_longest_palindromic_substring;
