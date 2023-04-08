@@ -7,17 +7,23 @@ impl Solution {
         let n = s.len();
         let mut result = (0, 0);
         for i in 0..n {
-            if n - 1 - i < result.1 - result.0 {
-                break;
-            }
-            for j in (result.1 - result.0 + i..n).rev() {
-                if Solution::dp(i, j, &s) {
-                    result = (i, j);
-                    break;
-                }
+            let p1 = Solution::inside_out(i, i, &s);
+            let p2 = Solution::inside_out(i, i + 1, &s);
+            let p = if p1.1 - p1.0 > p2.1 - p2.0 { p1 } else { p2 };
+            if result.1 - result.0 < p.1 - p.0 {
+                result = p
             }
         }
-        s[result.0..=result.1].iter().collect()
+        s[result.0..result.1].iter().collect()
+    }
+
+    fn inside_out(left: usize, right: usize, s: &[char]) -> (usize, usize) {
+        let (mut left, mut right) = (left as i32, right);
+        while left >= 0 && right < s.len() && s[left as usize] == s[right] {
+            left -= 1;
+            right += 1;
+        }
+        ((left + 1) as usize, right)
     }
 
     fn dp(i: usize, j: usize, s: &[char]) -> bool {
@@ -40,6 +46,10 @@ mod tests_5 {
         assert_eq!(
             Solution::longest_palindrome("bb".to_string()),
             "bb".to_string()
+        );
+        assert_eq!(
+            Solution::longest_palindrome("reifadyqgztixemwswtccodfnchcovrmiooffbbijkecuvlvukecutasfxqcqygltrogrdxlrslbnzktlanycgtniprjlospzhhgdrqcwlukbpsrumxguskubokxcmswjnssbkutdhppsdckuckcbwbxpmcmdicfjxaanoxndlfpqwneytatcbyjmimyawevmgirunvmdvxwdjbiqszwhfhjmrpexfwrbzkipxfowcbqjckaotmmgkrbjvhihgwuszdrdiijkgjoljjdubcbowvxslctleblfmdzmvdkqdxtiylabrwaccikkpnpsgcotxoggdydqnuogmxttcycjorzrtwtcchxrbbknfmxnonbhgbjjypqhbftceduxgrnaswtbytrhuiqnxkivevhprcvhggugrmmxolvfzwadlnzdwbtqbaveoongezoymdrhywxcxvggsewsxckucmncbrljskgsgtehortuvbtrsfisyewchxlmxqccoplhlzwutoqoctgfnrzhqctxaqacmirrqdwsbdpqttmyrmxxawgtjzqjgffqwlxqxwxrkgtzqkgdulbxmfcvxcwoswystiyittdjaqvaijwscqobqlhskhvoktksvmguzfankdigqlegrxxqpoitdtykfltohnzrcgmlnhddcfmawiriiiblwrttveedkxzzagdzpwvriuctvtrvdpqzcdnrkgcnpwjlraaaaskgguxzljktqvzzmruqqslutiipladbcxdwxhmvevsjrdkhdpxcyjkidkoznuagshnvccnkyeflpyjzlcbmhbytxnfzcrnmkyknbmtzwtaceajmnuyjblmdlbjdjxctvqcoqkbaszvrqvjgzdqpvmucerumskjrwhywjkwgligkectzboqbanrsvynxscpxqxtqhthdytfvhzjdcxgckvgfbldsfzxqdozxicrwqyprgnadfxsionkzzegmeynye".to_string()),
+            "uvlvu".to_string()
         );
     }
 }
