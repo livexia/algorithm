@@ -1,20 +1,22 @@
+from typing import Tuple
 import unittest
 
 
 class Solution:
     def longestPalindrome(self, s: str) -> str:
-        def dp(i, j) -> bool:
-            return i == j or s[i] == s[j] and (i + 1 == j or dp(i + 1, j - 1))
+        def expand(i, j) -> Tuple[int, int]:
+            while i >= 0 and j < len(s) and s[i] == s[j]:
+                i -= 1
+                j += 1
+            return (i + 1, j)
 
-        result = (0, 0)
+        start, end = (0, 0)
         for i in range(len(s)):
-            if len(s) - 1 - i < result[1] - result[0]:
-                break
-            for j in reversed(range(result[1] - result[0] + i, len(s))):
-                if dp(i, j):
-                    result = (i, j)
-                    break
-        return "".join(s[result[0] : result[1] + 1])
+            p1 = expand(i, i)
+            p2 = expand(i, i + 1)
+            p = p1 if p1[1] - p1[0] > p2[1] - p2[0] else p2
+            start, end = p if p[1] - p[0] > end - start else (start, end)
+        return "".join(s[start:end])
 
 
 class TestS5(unittest.TestCase):
