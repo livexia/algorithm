@@ -59,3 +59,4 @@ mod s0020_valid_parentheses;
 mod s0125_valid_palindrome;
 mod s0005_longest_palindromic_substring;
 mod s0647_palindromic_substrings;
+mod s0104_maximum_depth_of_binary_tree;
