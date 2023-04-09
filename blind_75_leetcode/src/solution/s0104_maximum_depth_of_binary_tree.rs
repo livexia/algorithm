@@ -53,24 +53,27 @@ impl TreeNode {
         Some(head)
     }
 
-    // pub fn level_order(&self) -> Vec<Option<i32>> {
-    //     let mut r = vec![Some(self.val)];
-    //     let mut queue = VecDeque::new();
-    //     if let Some(left) = self.left.as_ref() {
-    //         queue.push_back(left);
-    //     }
-    //     if let Some(right) = self.right.as_ref() {
-    //         queue.push_back(right);
-    //     }
-    //     while let Some(node) = queue.pop_front() {
-    //         r.push(Some(node.borrow().val));
-    //         if let Some(left) = node.clone().borrow().left.as_ref() {
-    //             queue.push_back(left);
-    //         }
-    //     }
+    pub fn level_order(&self) -> Vec<i32> {
+        let mut r = vec![self.val];
+        let mut queue = VecDeque::new();
+        if let Some(left) = &self.left {
+            queue.push_back(left.clone());
+        }
+        if let Some(right) = &self.right {
+            queue.push_back(right.clone());
+        }
+        while let Some(node) = queue.pop_front() {
+            r.push(node.borrow().val);
+            if let Some(left) = &node.borrow().left {
+                queue.push_back(left.clone());
+            };
+            if let Some(right) = &node.borrow().right {
+                queue.push_back(right.clone());
+            };
+        }
 
-    //     r
-    // }
+        r
+    }
 }
 
 use std::cell::RefCell;
@@ -132,17 +135,15 @@ mod tests_104 {
 
     #[test]
     fn create_tree() {
-        println!(
-            "{:?}",
-            TreeNode::form_vec(vec![
-                Some(3),
-                Some(9),
-                Some(20),
-                None,
-                None,
-                Some(15),
-                Some(7)
-            ])
-        );
+        let root = TreeNode::form_vec(vec![
+            Some(3),
+            Some(9),
+            Some(20),
+            None,
+            None,
+            Some(15),
+            Some(7),
+        ]);
+        assert_eq!(root.unwrap().borrow().level_order(), vec![3, 9, 20, 15, 7]);
     }
 }
