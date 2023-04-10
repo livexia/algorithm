@@ -61,3 +61,4 @@ mod s0005_longest_palindromic_substring;
 mod s0647_palindromic_substrings;
 mod s0104_maximum_depth_of_binary_tree;
 mod s0100_same_tree;
+mod s0226_invert_binary_tree;
