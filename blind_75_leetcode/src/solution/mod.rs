@@ -62,3 +62,4 @@ mod s0647_palindromic_substrings;
 mod s0104_maximum_depth_of_binary_tree;
 mod s0100_same_tree;
 mod s0226_invert_binary_tree;
+mod s0124_binary_tree_maximum_path_sum;
