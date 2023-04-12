@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 impl Solution {
     pub fn max_path_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-        let mut max_sum = 0;
+        let mut max_sum = i32::MIN;
         Solution::traversal(&root, &mut max_sum);
         max_sum
     }
@@ -15,11 +15,11 @@ impl Solution {
     fn traversal(root: &Option<Rc<RefCell<TreeNode>>>, max_sum: &mut i32) -> i32 {
         if let Some(node) = root {
             let val = node.borrow().val;
-            let mut sum = val + Solution::traversal(&node.borrow().left, max_sum);
-            sum = sum.max(val + Solution::traversal(&node.borrow().right, max_sum));
-            *max_sum = sum.max(*max_sum);
+            let left_gain = Solution::traversal(&node.borrow().left, max_sum).max(0);
+            let right_gain = Solution::traversal(&node.borrow().right, max_sum).max(0);
+            *max_sum = (val + left_gain + right_gain).max(*max_sum);
 
-            sum
+            left_gain.max(right_gain) + val
         } else {
             0
         }
