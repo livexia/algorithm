@@ -76,8 +76,6 @@ impl Codec {
                     node.borrow_mut().left = Some(left.clone());
                     queue.push_back(left);
                 }
-            } else {
-                break;
             }
             if let Some(right_val) = data.next() {
                 if let Some(right) = Codec::str_val_to_node(right_val) {

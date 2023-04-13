@@ -23,7 +23,10 @@ def create_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
     while i < len(vals):
         node = queue.popleft()
         if node:
-            a, b = vals[i], vals[i + 1]
+            a, b = (
+                vals[i] if i < len(vals) else None,
+                vals[i + 1] if i + 1 < len(vals) else None,
+            )
             if a:
                 node.left = TreeNode(a)
                 queue.append(node.left)
