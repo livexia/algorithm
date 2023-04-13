@@ -35,18 +35,16 @@ impl TreeNode {
         queue.push_back(head.clone());
 
         let mut i = 1;
-        while i < v.len() {
-            if let Some(node) = queue.pop_front() {
-                if let Some(val) = v[i] {
-                    let left = Rc::new(RefCell::new(TreeNode::new(val)));
-                    node.borrow_mut().left = Some(left.clone());
-                    queue.push_back(left);
-                }
-                if let Some(val) = v[i + 1] {
-                    let right = Rc::new(RefCell::new(TreeNode::new(val)));
-                    node.borrow_mut().right = Some(right.clone());
-                    queue.push_back(right);
-                }
+        while let Some(node) = queue.pop_front() {
+            if let Some(&Some(val)) = v.get(i) {
+                let left = Rc::new(RefCell::new(TreeNode::new(val)));
+                node.borrow_mut().left = Some(left.clone());
+                queue.push_back(left);
+            }
+            if let Some(&Some(val)) = v.get(i + 1) {
+                let right = Rc::new(RefCell::new(TreeNode::new(val)));
+                node.borrow_mut().right = Some(right.clone());
+                queue.push_back(right);
             }
             i += 2;
         }
