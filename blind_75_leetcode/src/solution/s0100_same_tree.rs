@@ -30,8 +30,8 @@ mod tests_100 {
 
     #[test]
     fn it_works() {
-        let p = TreeNode::form_vec(vec![Some(1), Some(2), Some(3)]);
-        let q = TreeNode::form_vec(vec![Some(1), Some(2), Some(3)]);
+        let p = TreeNode::from_vec(vec![Some(1), Some(2), Some(3)]);
+        let q = TreeNode::from_vec(vec![Some(1), Some(2), Some(3)]);
         assert_eq!(Solution::is_same_tree(p, q), true);
     }
 }

@@ -35,7 +35,7 @@ mod tests_102 {
     #[test]
     fn it_works() {
         assert_eq!(
-            Solution::level_order(TreeNode::form_vec(vec![
+            Solution::level_order(TreeNode::from_vec(vec![
                 Some(3),
                 Some(9),
                 Some(20),

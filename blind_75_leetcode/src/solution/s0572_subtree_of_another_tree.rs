@@ -52,14 +52,14 @@ mod tests_572 {
     fn it_works() {
         assert_eq!(
             Solution::is_subtree(
-                TreeNode::form_vec(vec![Some(3), Some(4), Some(5), Some(1), Some(2)]),
-                TreeNode::form_vec(vec![Some(4), Some(1), Some(2)])
+                TreeNode::from_vec(vec![Some(3), Some(4), Some(5), Some(1), Some(2)]),
+                TreeNode::from_vec(vec![Some(4), Some(1), Some(2)])
             ),
             true
         );
         assert_eq!(
             Solution::is_subtree(
-                TreeNode::form_vec(vec![
+                TreeNode::from_vec(vec![
                     Some(3),
                     Some(4),
                     Some(5),
@@ -71,7 +71,7 @@ mod tests_572 {
                     None,
                     Some(0)
                 ]),
-                TreeNode::form_vec(vec![Some(4), Some(1), Some(2)])
+                TreeNode::from_vec(vec![Some(4), Some(1), Some(2)])
             ),
             false
         );

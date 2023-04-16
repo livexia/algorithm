@@ -21,7 +21,7 @@ impl TreeNode {
         }
     }
 
-    pub fn form_vec(v: Vec<Option<i32>>) -> Option<Rc<RefCell<TreeNode>>> {
+    pub fn from_vec(v: Vec<Option<i32>>) -> Option<Rc<RefCell<TreeNode>>> {
         // level order
         if v.is_empty() {
             return None;
@@ -119,7 +119,7 @@ mod tests_104 {
 
     #[test]
     fn it_works() {
-        let root = TreeNode::form_vec(vec![
+        let root = TreeNode::from_vec(vec![
             Some(3),
             Some(9),
             Some(20),
@@ -133,7 +133,7 @@ mod tests_104 {
 
     #[test]
     fn create_tree() {
-        let root = TreeNode::form_vec(vec![
+        let root = TreeNode::from_vec(vec![
             Some(3),
             Some(9),
             Some(20),

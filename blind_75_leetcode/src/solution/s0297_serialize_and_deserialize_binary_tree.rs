@@ -105,7 +105,7 @@ mod tests_297 {
     #[test]
     fn it_works() {
         let codec = Codec::new();
-        let root = TreeNode::form_vec(vec![
+        let root = TreeNode::from_vec(vec![
             Some(1),
             Some(2),
             Some(3),
@@ -119,7 +119,7 @@ mod tests_297 {
         assert_eq!(codec.deserialize(strs.to_string()), root);
         assert_eq!(
             codec.deserialize("[1,2]".to_string()),
-            TreeNode::form_vec(vec![Some(1), Some(2)])
+            TreeNode::from_vec(vec![Some(1), Some(2)])
         );
     }
 }

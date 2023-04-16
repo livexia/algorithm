@@ -25,10 +25,10 @@ mod tests_226 {
     #[test]
     fn it_works() {
         assert_eq!(
-            Solution::invert_tree(TreeNode::form_vec(
+            Solution::invert_tree(TreeNode::from_vec(
                 [4, 2, 7, 1, 3, 6, 9].into_iter().map(|i| Some(i)).collect()
             )),
-            TreeNode::form_vec([4, 7, 2, 9, 6, 3, 1].into_iter().map(|i| Some(i)).collect())
+            TreeNode::from_vec([4, 7, 2, 9, 6, 3, 1].into_iter().map(|i| Some(i)).collect())
         );
     }
 }
