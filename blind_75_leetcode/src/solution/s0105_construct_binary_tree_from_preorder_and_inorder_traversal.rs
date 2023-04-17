@@ -4,26 +4,32 @@ pub struct Solution {}
 use super::s0104_maximum_depth_of_binary_tree::TreeNode;
 
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::rc::Rc;
 impl Solution {
     pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-        Solution::build_node(&mut 0, &preorder, &inorder)
+        let inorder_index = inorder.iter().enumerate().map(|(i, &v)| (v, i)).collect();
+        Solution::build_node(&mut 0, &preorder, &inorder_index, 0, inorder.len())
     }
 
     fn build_node(
         pre_index: &mut usize,
         preorder: &[i32],
-        inorder: &[i32],
+        inorder_index: &HashMap<i32, usize>,
+        in_start: usize,
+        in_end: usize,
     ) -> Option<Rc<RefCell<TreeNode>>> {
-        if inorder.is_empty() {
+        if in_start == in_end {
             None
         } else {
             let root = preorder[*pre_index];
             *pre_index += 1;
             let mut node = TreeNode::new(root);
-            let in_index = inorder.iter().position(|&i| i == root).unwrap();
-            node.left = Solution::build_node(pre_index, &preorder, &inorder[..in_index]);
-            node.right = Solution::build_node(pre_index, &preorder, &inorder[in_index + 1..]);
+            let &in_index = inorder_index.get(&root).unwrap();
+            node.left =
+                Solution::build_node(pre_index, preorder, inorder_index, in_start, in_index);
+            node.right =
+                Solution::build_node(pre_index, preorder, inorder_index, in_index + 1, in_end);
             Some(Rc::new(RefCell::new(node)))
         }
     }
