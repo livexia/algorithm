@@ -4,43 +4,26 @@ pub struct Solution {}
 use super::s0104_maximum_depth_of_binary_tree::TreeNode;
 
 use std::cell::RefCell;
-use std::collections::HashMap;
 use std::rc::Rc;
 impl Solution {
     pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-        Solution::build_node(&preorder, &inorder)
+        Solution::build_node(&mut 0, &preorder, &inorder)
     }
 
     fn build_node(
+        pre_index: &mut usize,
         preorder: &[i32],
         inorder: &[i32],
-        // preorder_index: &HashMap<i32, usize>,
-        // inorder_index: &HashMap<i32, usize>,
     ) -> Option<Rc<RefCell<TreeNode>>> {
-        if preorder.len() == 1 {
-            Some(Rc::new(RefCell::new(TreeNode::new(preorder[0]))))
-        } else if preorder.is_empty() {
+        if inorder.is_empty() {
             None
         } else {
-            let preorder_index: HashMap<i32, usize> =
-                preorder.iter().enumerate().map(|(i, &v)| (v, i)).collect();
-            let inorder_index: HashMap<i32, usize> =
-                inorder.iter().enumerate().map(|(i, &v)| (v, i)).collect();
-            let root = preorder[0];
+            let root = preorder[*pre_index];
+            *pre_index += 1;
             let mut node = TreeNode::new(root);
-            let &in_index = inorder_index.get(&root).unwrap();
-            let left = if let Some(&left) = inorder[..in_index]
-                .iter()
-                .map(|i| preorder_index.get(i).unwrap())
-                .max()
-            {
-                node.left = Solution::build_node(&preorder[1..=left], &inorder[..in_index]);
-                left
-            } else {
-                node.left = None;
-                0
-            };
-            node.right = Solution::build_node(&preorder[left + 1..], &inorder[in_index + 1..]);
+            let in_index = inorder.iter().position(|&i| i == root).unwrap();
+            node.left = Solution::build_node(pre_index, &preorder, &inorder[..in_index]);
+            node.right = Solution::build_node(pre_index, &preorder, &inorder[in_index + 1..]);
             Some(Rc::new(RefCell::new(node)))
         }
     }
