@@ -1,4 +1,3 @@
-from re import split
 import unittest
 
 from .s0104_maximum_depth_of_binary_tree import TreeNode, create_tree_from_list
