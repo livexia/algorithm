@@ -35,6 +35,35 @@ impl Solution {
     }
 }
 
+struct SolutionBFS {}
+impl SolutionBFS {
+    pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+        if preorder.is_empty() {
+            return None;
+        }
+
+        let root = Rc::new(RefCell::new(TreeNode::new(preorder[0])));
+        let mut stack = vec![root.clone()];
+        let mut in_index = 0;
+        for &child_val in &preorder[1..] {
+            let mut node = stack.last_mut().unwrap().clone();
+            let child = Rc::new(RefCell::new(TreeNode::new(child_val)));
+            if node.borrow().val != inorder[in_index] {
+                node.borrow_mut().left = Some(child.clone());
+                stack.push(child);
+            } else {
+                while !stack.is_empty() && stack.last().unwrap().borrow().val == inorder[in_index] {
+                    node = stack.pop().unwrap();
+                    in_index += 1;
+                }
+                node.borrow_mut().right = Some(child.clone());
+                stack.push(child);
+            }
+        }
+        Some(root)
+    }
+}
+
 #[cfg(test)]
 mod tests_105 {
     use super::*;
@@ -63,6 +92,34 @@ mod tests_105 {
         );
         assert_eq!(
             Solution::build_tree(vec![1, 2], vec![1, 2]),
+            TreeNode::from_vec(vec![Some(1), None, Some(2)])
+        );
+    }
+
+    #[test]
+    fn bfs_works() {
+        assert_eq!(
+            SolutionBFS::build_tree(vec![3, 9, 20, 15, 7], vec![9, 3, 15, 20, 7]),
+            TreeNode::from_vec(vec![
+                Some(3),
+                Some(9),
+                Some(20),
+                None,
+                None,
+                Some(15),
+                Some(7)
+            ])
+        );
+        assert_eq!(
+            SolutionBFS::build_tree(vec![3, 9, 15, 7, 20], vec![15, 9, 7, 3, 20]),
+            TreeNode::from_vec(vec![Some(3), Some(9), Some(20), Some(15), Some(7)])
+        );
+        assert_eq!(
+            SolutionBFS::build_tree(vec![-1], vec![-1]),
+            TreeNode::from_vec(vec![Some(-1)])
+        );
+        assert_eq!(
+            SolutionBFS::build_tree(vec![1, 2], vec![1, 2]),
             TreeNode::from_vec(vec![Some(1), None, Some(2)])
         );
     }
