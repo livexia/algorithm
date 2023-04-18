@@ -9,24 +9,33 @@ impl Solution {
         Solution::validation_bst(&root).is_ok()
     }
 
-    fn validation_bst(root: &Option<Rc<RefCell<TreeNode>>>) -> Result<Option<i32>, ()> {
+    fn validation_bst(root: &Option<Rc<RefCell<TreeNode>>>) -> Result<Option<(i32, i32)>, ()> {
         if let Some(node) = root {
             let val = node.borrow().val;
-            match (
+            if let (Ok(l), Ok(r)) = (
                 Solution::validation_bst(&node.borrow().left),
                 Solution::validation_bst(&node.borrow().right),
             ) {
-                (Err(_), _) | (_, Err(_)) => Err(()),
-                (Ok(r1), Ok(r2)) => {
-                    let l_v = r1.unwrap_or(val - 1);
-                    let r_v = r2.unwrap_or(val + 1);
-                    if l_v < val && val < r_v {
-                        Ok(Some(val))
-                    } else {
-                        Err(())
+                match (l, r) {
+                    (None, None) => return Ok(Some((val, val))),
+                    (Some((l_min, l_max)), None) => {
+                        if l_max < val {
+                            return Ok(Some((l_min.min(val), val)));
+                        }
                     }
-                }
+                    (None, Some((r_min, r_max))) => {
+                        if r_min > val {
+                            return Ok(Some((val, r_max.max(val))));
+                        }
+                    }
+                    (Some((l_min, l_max)), Some((r_min, r_max))) => {
+                        if l_max < val && r_min > val {
+                            return Ok(Some((l_min.min(val), r_max.max(val))));
+                        }
+                    }
+                };
             }
+            Err(())
         } else {
             Ok(None)
         }
@@ -42,6 +51,10 @@ mod tests_98 {
     fn it_works() {
         assert_eq!(
             Solution::is_valid_bst(TreeNode::from_vec(vec![Some(2), Some(1), Some(3)])),
+            true
+        );
+        assert_eq!(
+            Solution::is_valid_bst(TreeNode::from_vec(vec![Some(2147483647)])),
             true
         );
         assert_eq!(
