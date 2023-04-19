@@ -44,5 +44,5 @@ class TestS572(unittest.TestCase):
                 create_tree_from_list([3, 4, 5, 1, 2, None, None, None, None, 0]),
                 create_tree_from_list([4, 1, 2]),
             ),
-            True,
+            False,
         )

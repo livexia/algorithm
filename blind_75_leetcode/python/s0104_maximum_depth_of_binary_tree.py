@@ -15,7 +15,7 @@ class TreeNode:
 
 
 def create_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
-    if not vals[0]:
+    if vals[0] is None:
         return None
     head = TreeNode(vals[0])
     queue = deque([head])
@@ -27,10 +27,10 @@ def create_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
                 vals[i] if i < len(vals) else None,
                 vals[i + 1] if i + 1 < len(vals) else None,
             )
-            if a:
+            if a is not None:
                 node.left = TreeNode(a)
                 queue.append(node.left)
-            if b:
+            if b is not None:
                 node.right = TreeNode(b)
                 queue.append(node.right)
         i += 2
@@ -49,3 +49,4 @@ class TestS104(unittest.TestCase):
     def test_works(self):
         root = create_tree_from_list([3, 9, 20, None, None, 15, 7])
         self.assertEqual(Solution().maxDepth(root), 3)
+        self.assertNotEqual(create_tree_from_list([0, None, -1]), None)
