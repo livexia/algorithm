@@ -20,17 +20,17 @@ impl Solution {
                     (None, None) => return Ok(Some((val, val))),
                     (Some((l_min, l_max)), None) => {
                         if l_max < val {
-                            return Ok(Some((l_min.min(val), val)));
+                            return Ok(Some((l_min, val)));
                         }
                     }
                     (None, Some((r_min, r_max))) => {
                         if r_min > val {
-                            return Ok(Some((val, r_max.max(val))));
+                            return Ok(Some((val, r_max)));
                         }
                     }
                     (Some((l_min, l_max)), Some((r_min, r_max))) => {
                         if l_max < val && r_min > val {
-                            return Ok(Some((l_min.min(val), r_max.max(val))));
+                            return Ok(Some((l_min, r_max)));
                         }
                     }
                 };
