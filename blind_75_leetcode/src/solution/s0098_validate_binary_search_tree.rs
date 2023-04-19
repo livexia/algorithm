@@ -6,38 +6,29 @@ use std::cell::RefCell;
 use std::rc::Rc;
 impl Solution {
     pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-        Solution::validation_bst(&root).is_ok()
+        Solution::validation_bst(&root, None, None)
     }
 
-    fn validation_bst(root: &Option<Rc<RefCell<TreeNode>>>) -> Result<Option<(i32, i32)>, ()> {
-        if let Some(node) = root {
-            let val = node.borrow().val;
-            if let (Ok(l), Ok(r)) = (
-                Solution::validation_bst(&node.borrow().left),
-                Solution::validation_bst(&node.borrow().right),
-            ) {
-                match (l, r) {
-                    (None, None) => return Ok(Some((val, val))),
-                    (Some((l_min, l_max)), None) => {
-                        if l_max < val {
-                            return Ok(Some((l_min, val)));
-                        }
-                    }
-                    (None, Some((r_min, r_max))) => {
-                        if r_min > val {
-                            return Ok(Some((val, r_max)));
-                        }
-                    }
-                    (Some((l_min, l_max)), Some((r_min, r_max))) => {
-                        if l_max < val && r_min > val {
-                            return Ok(Some((l_min, r_max)));
-                        }
-                    }
-                };
+    fn validation_bst(
+        node: &Option<Rc<RefCell<TreeNode>>>,
+        min: Option<i32>,
+        max: Option<i32>,
+    ) -> bool {
+        if let Some(node) = node {
+            let node = node.borrow();
+            let (mut l_flag, mut r_flag) = (true, true);
+            if let Some(min) = min {
+                l_flag = node.val > min;
             }
-            Err(())
+            if let Some(max) = max {
+                r_flag = node.val < max;
+            }
+            l_flag
+                && r_flag
+                && Solution::validation_bst(&node.left, min, Some(node.val))
+                && Solution::validation_bst(&node.right, Some(node.val), max)
         } else {
-            Ok(None)
+            true
         }
     }
 }
