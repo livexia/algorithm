@@ -68,3 +68,4 @@ mod s0297_serialize_and_deserialize_binary_tree;
 mod s0572_subtree_of_another_tree;
 mod s0105_construct_binary_tree_from_preorder_and_inorder_traversal;
 mod s0098_validate_binary_search_tree;
+mod s0230_kth_smallest_element_in_a_bst;
