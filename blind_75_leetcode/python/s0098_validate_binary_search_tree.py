@@ -30,10 +30,40 @@ class Solution:
         return validation(root, None, None)
 
 
+class Solution2:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        stack = []
+        inorder = None
+        while stack or root is not None:
+            while root is not None:
+                stack.append(root)
+                root = root.left
+
+            root = stack.pop()
+            if inorder is not None and root.val <= inorder:
+                return False
+
+            inorder = root.val
+            root = root.right
+
+        return True
+
+
 class TestS98(unittest.TestCase):
     def test_works(self):
         self.assertEqual(Solution().isValidBST(create_tree_from_list([2, 1, 3])), True)
-        print(create_tree_from_list([0, None, -1]))
+        self.assertEqual(
+            Solution().isValidBST(create_tree_from_list([0, None, -1])), False
+        )
+        self.assertEqual(
+            Solution().isValidBST(create_tree_from_list([5, 1, 4, None, None, 3, 6])),
+            False,
+        )
+
+    def test_solution2_works(self):
+        Solution = Solution2
+
+        self.assertEqual(Solution().isValidBST(create_tree_from_list([2, 1, 3])), True)
         self.assertEqual(
             Solution().isValidBST(create_tree_from_list([0, None, -1])), False
         )
