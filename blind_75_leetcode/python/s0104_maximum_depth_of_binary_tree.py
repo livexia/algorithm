@@ -37,6 +37,20 @@ def create_tree_from_list(vals: List[Optional[int]]) -> Optional[TreeNode]:
     return head
 
 
+def search_val(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+    if root is None:
+        return None
+    else:
+        if root.val == val:
+            return root
+        left = search_val(root.left, val)
+        if left is not None:
+            return left
+        right = search_val(root.right, val)
+        if right is not None:
+            return right
+
+
 class Solution:
     def maxDepth(self, root: Optional[TreeNode]) -> int:
         if root:
