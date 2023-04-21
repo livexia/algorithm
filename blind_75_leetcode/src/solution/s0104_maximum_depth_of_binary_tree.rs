@@ -74,6 +74,24 @@ impl TreeNode {
     }
 }
 
+pub fn search_val(root: &Option<Rc<RefCell<TreeNode>>>, val: i32) -> Option<Rc<RefCell<TreeNode>>> {
+    if let Some(root) = root {
+        if root.borrow().val == val {
+            Some(root.clone())
+        } else {
+            if let Some(node) = search_val(&root.borrow().left, val) {
+                Some(node)
+            } else if let Some(node) = search_val(&root.borrow().right, val) {
+                Some(node)
+            } else {
+                None
+            }
+        }
+    } else {
+        None
+    }
+}
+
 use std::cell::RefCell;
 use std::rc::Rc;
 impl Solution {
