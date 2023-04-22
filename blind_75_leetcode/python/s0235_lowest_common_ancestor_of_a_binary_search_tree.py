@@ -19,8 +19,37 @@ class Solution:
             return root
 
 
+class Solution2:
+    def lowestCommonAncestor(
+        self, root: "TreeNode", p: "TreeNode", q: "TreeNode"
+    ) -> "TreeNode":
+        while True:
+            if root.val < p.val and root.val < q.val:
+                root = root.right
+            elif root.val > p.val and root.val > q.val:
+                root = root.left
+            else:
+                return root
+
+
 class TestS235(unittest.TestCase):
     def test_works(self):
+        root = create_tree_from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5])
+        self.assertEqual(
+            Solution().lowestCommonAncestor(
+                root, search_val(root, 2), search_val(root, 8)
+            ),
+            search_val(root, 6),
+        )
+        self.assertEqual(
+            Solution().lowestCommonAncestor(
+                root, search_val(root, 2), search_val(root, 4)
+            ),
+            search_val(root, 2),
+        )
+
+    def test_solution2_works(self):
+        Solution = Solution2
         root = create_tree_from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5])
         self.assertEqual(
             Solution().lowestCommonAncestor(
