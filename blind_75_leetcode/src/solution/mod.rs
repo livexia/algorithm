@@ -70,3 +70,4 @@ mod s0105_construct_binary_tree_from_preorder_and_inorder_traversal;
 mod s0098_validate_binary_search_tree;
 mod s0230_kth_smallest_element_in_a_bst;
 mod s0235_lowest_common_ancestor_of_a_binary_search_tree;
+mod s0208_implement_trie_prefix_tree;
