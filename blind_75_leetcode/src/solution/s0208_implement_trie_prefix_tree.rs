@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 struct Trie {
     is_word: bool,
-    children: HashMap<char, Trie>,
+    children: HashMap<u8, Trie>,
 }
 
 impl Trie {
@@ -17,34 +17,30 @@ impl Trie {
 
     fn insert(&mut self, word: String) {
         let mut node = self;
-        for char in word.chars() {
-            node = node.children.entry(char).or_insert(Trie::new());
+        for byte in word.bytes() {
+            node = node.children.entry(byte).or_insert(Trie::new());
         }
         node.is_word = true;
     }
 
-    fn search(&self, word: String) -> bool {
+    fn search_prefix(&self, prefix: &str) -> Option<bool> {
         let mut node = self;
-        for char in word.chars() {
-            if let Some(child) = node.children.get(&char) {
+        for byte in prefix.bytes() {
+            if let Some(child) = node.children.get(&byte) {
                 node = child;
             } else {
-                return false;
+                return None;
             }
         }
-        node.is_word
+        Some(node.is_word)
+    }
+
+    fn search(&self, word: String) -> bool {
+        self.search_prefix(&word).unwrap_or(false)
     }
 
     fn starts_with(&self, prefix: String) -> bool {
-        let mut node = self;
-        for char in prefix.chars() {
-            if let Some(child) = node.children.get(&char) {
-                node = child;
-            } else {
-                return false;
-            }
-        }
-        true
+        self.search_prefix(&prefix).is_some()
     }
 }
 
