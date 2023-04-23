@@ -1,32 +1,31 @@
 #![allow(dead_code)]
 
-use std::collections::HashMap;
-
+#[derive(Default)]
 struct Trie {
     is_word: bool,
-    children: HashMap<u8, Trie>,
+    children: [Option<Box<Trie>>; 26],
 }
 
 impl Trie {
     fn new() -> Self {
-        Self {
-            is_word: false,
-            children: HashMap::new(),
-        }
+        Self::default()
     }
 
     fn insert(&mut self, word: String) {
         let mut node = self;
-        for byte in word.bytes() {
-            node = node.children.entry(byte).or_insert(Trie::new());
+        for index in word.bytes().map(|b| (b - b'a') as usize) {
+            if node.children[index].is_none() {
+                node.children[index] = Some(Box::new(Trie::new()));
+            }
+            node = node.children[index].as_mut().unwrap();
         }
         node.is_word = true;
     }
 
     fn search_prefix(&self, prefix: &str) -> Option<bool> {
         let mut node = self;
-        for byte in prefix.bytes() {
-            if let Some(child) = node.children.get(&byte) {
+        for index in prefix.bytes().map(|b| (b - b'a') as usize) {
+            if let Some(child) = &node.children[index] {
                 node = child;
             } else {
                 return None;
