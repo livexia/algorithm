@@ -17,18 +17,21 @@ impl WordDictionary {
     }
 
     fn add_word(&mut self, word: String) {
-        let mut node = self;
-        for index in word.bytes().map(|b| (b - b'a') as usize) {
-            if node.children[index].is_none() {
-                node.children[index] = Some(Box::new(WordDictionary::new()));
-            }
-            node = node.children[index].as_mut().unwrap();
-        }
+        let node = word
+            .bytes()
+            .map(|b| (b - b'a') as usize)
+            .fold(self, |node, index| {
+                node.children[index].get_or_insert(Box::default())
+            });
         node.is_word = true;
     }
 
     fn _search(&self, bytes: &[usize], index: usize) -> bool {
+<<<<<<< Updated upstream
         if index >= bytes.len() {
+=======
+        if index == bytes.len() {
+>>>>>>> Stashed changes
             self.is_word
         } else if bytes[index] == 27 {
             self.children
