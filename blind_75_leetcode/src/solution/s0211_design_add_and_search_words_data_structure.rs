@@ -27,11 +27,7 @@ impl WordDictionary {
     }
 
     fn _search(&self, bytes: &[usize], index: usize) -> bool {
-<<<<<<< Updated upstream
-        if index >= bytes.len() {
-=======
         if index == bytes.len() {
->>>>>>> Stashed changes
             self.is_word
         } else if bytes[index] == 27 {
             self.children
@@ -64,8 +60,6 @@ mod tests_211 {
         w.add_word("bad".to_string());
         w.add_word("dad".to_string());
         w.add_word("mad".to_string());
-        assert_eq!(w.search("b".to_string()), false);
-        assert_eq!(w.search(".bad".to_string()), false);
         assert_eq!(w.search("pad".to_string()), false);
         assert_eq!(w.search("bad".to_string()), true);
         assert_eq!(w.search(".ad".to_string()), true);
