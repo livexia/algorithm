@@ -1,17 +1,22 @@
+from __future__ import annotations
+from typing import List, Optional
 import unittest
 
 
 class WordDictionary:
+    is_word: bool
+    children: List[Optional[WordDictionary]]
+
     def __init__(self):
         self.is_word = False
         self.children = [None] * 26
 
     def addWord(self, word: str) -> None:
-        node = self
+        node: WordDictionary = self
         for index in (ord(c) - ord("a") for c in word):
             if node.children[index] is None:
                 node.children[index] = WordDictionary()
-            node = node.children[index]
+            node = node.children[index]  # type: ignore
         node.is_word = True
 
     def _search(self, word: str, index: int) -> bool:
