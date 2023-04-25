@@ -6,8 +6,9 @@ pub struct Solution {}
 
 impl Solution {
     pub fn find_words(board: Vec<Vec<char>>, words: Vec<String>) -> Vec<String> {
-        let trie = Trie::new(&board);
-        words.into_iter().filter(|w| trie.search(w)).collect()
+        let mut trie = Trie::new();
+        trie.add_from_board(&board);
+        words.into_iter().filter(|w| trie.search_word(w)).collect()
     }
 }
 
@@ -17,8 +18,13 @@ struct Trie {
 }
 
 impl Trie {
-    fn new(board: &[Vec<char>]) -> Trie {
-        let mut trie = Trie::default();
+    fn new() -> Trie {
+        Trie::default()
+    }
+}
+
+impl Trie {
+    fn add_from_board(&mut self, board: &[Vec<char>]) {
         let board: Vec<Vec<_>> = board
             .iter()
             .map(|r| r.iter().map(|&c| (c as u8 - b'a') as usize).collect())
@@ -26,13 +32,12 @@ impl Trie {
         let (m, n) = (board.len(), board[0].len());
         for i in 0..m {
             for j in 0..n {
-                trie.add(&board, i, j, &mut HashSet::new());
+                self._add_from_board(&board, i, j, &mut HashSet::new());
             }
         }
-        trie
     }
 
-    fn add(
+    fn _add_from_board(
         &mut self,
         board: &[Vec<usize>],
         i: usize,
@@ -43,21 +48,21 @@ impl Trie {
         let (m, n) = (board.len(), board[0].len());
         let node = self.children[board[i][j]].get_or_insert(Default::default());
         if i > 0 && !visited.contains(&(i - 1, j)) {
-            node.add(board, i - 1, j, visited)
+            node._add_from_board(board, i - 1, j, visited)
         }
         if i + 1 < m && !visited.contains(&(i + 1, j)) {
-            node.add(board, i + 1, j, visited)
+            node._add_from_board(board, i + 1, j, visited)
         }
         if j > 0 && !visited.contains(&(i, j - 1)) {
-            node.add(board, i, j - 1, visited)
+            node._add_from_board(board, i, j - 1, visited)
         }
         if j + 1 < n && !visited.contains(&(i, j + 1)) {
-            node.add(board, i, j + 1, visited)
+            node._add_from_board(board, i, j + 1, visited)
         }
         visited.remove(&(i, j));
     }
 
-    fn search(&self, word: &str) -> bool {
+    fn search_word(&self, word: &str) -> bool {
         let mut node = self;
         for b in word.bytes().map(|c| (c - b'a') as usize) {
             if let Some(child) = &node.children[b] {
