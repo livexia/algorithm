@@ -72,3 +72,4 @@ mod s0230_kth_smallest_element_in_a_bst;
 mod s0235_lowest_common_ancestor_of_a_binary_search_tree;
 mod s0208_implement_trie_prefix_tree;
 mod s0211_design_add_and_search_words_data_structure;
+mod s0212_word_search_ii;
