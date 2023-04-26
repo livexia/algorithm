@@ -1,5 +1,4 @@
-from collections import defaultdict
-from typing import DefaultDict, Optional, List
+from typing import Optional, List, Dict
 import unittest
 
 
@@ -14,16 +13,17 @@ class Solution:
 
 class Trie:
     word: Optional[str]
-    children: DefaultDict
+    children: Dict
 
     def __init__(self) -> None:
         self.word = None
-        self.children = defaultdict(Trie)
-        pass
+        self.children = {}
 
     def add(self, word: str):
         node: Trie = self
         for c in (ord(c) - ord("a") for c in word):
+            if c not in node.children:
+                node.children[c] = Trie()
             node = node.children[c]  # type: ignore
         node.word = word
 
@@ -42,14 +42,16 @@ class Trie:
         c = board[i][j]
         board[i][j] = "#"
         index = ord(c) - ord("a")
+        if index not in self.children:
+            board[i][j] = c
+            return
         node = self.children[index]
         if node.word is not None:
             searched.append(node.word)
             node.word = None
-        if node.children:
-            for (x, y) in [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]:
-                if 0 <= x < m and 0 <= y < n and board[x][y] != "#":
-                    node._search_board(board, x, y, searched)
+        for (x, y) in [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]:
+            if 0 <= x < m and 0 <= y < n and board[x][y] != "#":
+                node._search_board(board, x, y, searched)
         board[i][j] = c
         if not node.children:
             self.children.pop(index)
