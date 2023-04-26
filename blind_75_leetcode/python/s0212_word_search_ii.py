@@ -1,4 +1,5 @@
-from typing import Optional, List
+from collections import defaultdict
+from typing import DefaultDict, Optional, List
 import unittest
 
 
@@ -7,26 +8,22 @@ class Solution:
         trie = Trie()
         for w in words:
             trie.add(w)
-        print(trie.children)
         r = trie.search_board(board)
-        print(trie.children)
         return r
 
 
 class Trie:
     word: Optional[str]
-    children: List[Optional["Trie"]]
+    children: DefaultDict
 
     def __init__(self) -> None:
         self.word = None
-        self.children = [None] * 26
+        self.children = defaultdict(Trie)
         pass
 
     def add(self, word: str):
         node: Trie = self
         for c in (ord(c) - ord("a") for c in word):
-            if node.children[c] is None:
-                node.children[c] = Trie()
             node = node.children[c]  # type: ignore
         node.word = word
 
@@ -46,17 +43,16 @@ class Trie:
         board[i][j] = "#"
         index = ord(c) - ord("a")
         node = self.children[index]
-        if node is not None:
-            if node.word is not None:
-                searched.append(node.word)
-                node.word = None
+        if node.word is not None:
+            searched.append(node.word)
+            node.word = None
+        if node.children:
             for (x, y) in [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]:
                 if 0 <= x < m and 0 <= y < n and board[x][y] != "#":
                     node._search_board(board, x, y, searched)
-
-            if all([child is None for child in node.children]):
-                self.children[index] = None
         board[i][j] = c
+        if not node.children:
+            self.children.pop(index)
 
 
 class TestS212(unittest.TestCase):
