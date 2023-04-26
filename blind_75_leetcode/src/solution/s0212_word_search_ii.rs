@@ -76,6 +76,9 @@ impl Trie {
             if j + 1 < n && board[i][j + 1] != 27 {
                 node._search_board(board, i, j + 1, searched);
             }
+            if node.children.iter().all(|c| c.is_none()) {
+                self.children[byte] = None;
+            }
         }
         board[i][j] = byte;
     }
