@@ -1,7 +1,5 @@
 #![allow(dead_code)]
 
-use std::collections::HashSet;
-
 pub struct Solution {}
 
 impl Solution {
@@ -38,7 +36,7 @@ impl Trie {
     }
 
     fn search_board(&mut self, board: &[Vec<char>]) -> Vec<String> {
-        let board: Vec<Vec<_>> = board
+        let mut board: Vec<Vec<_>> = board
             .iter()
             .map(|r| r.iter().map(|&c| (c as u8 - b'a') as usize).collect())
             .collect();
@@ -46,7 +44,7 @@ impl Trie {
         let mut r = vec![];
         for i in 0..m {
             for j in 0..n {
-                self._search_board(&board, i, j, &mut HashSet::new(), &mut r)
+                self._search_board(&mut board, i, j, &mut r)
             }
         }
         r
@@ -54,73 +52,68 @@ impl Trie {
 
     fn _search_board(
         &mut self,
-        board: &[Vec<usize>],
+        board: &mut [Vec<usize>],
         i: usize,
         j: usize,
-        visited: &mut HashSet<(usize, usize)>,
         searched: &mut Vec<String>,
     ) {
-        if let Some(node) = &mut self.children[board[i][j]] {
+        let byte = board[i][j];
+        board[i][j] = 27;
+        if let Some(node) = &mut self.children[byte] {
             let (m, n) = (board.len(), board[0].len());
             if let Some(word) = node.is_word.take() {
                 searched.push(word)
             }
-            visited.insert((i, j));
-            if i > 0 && !visited.contains(&(i - 1, j)) {
-                node._search_board(board, i - 1, j, visited, searched);
+            if i > 0 && board[i - 1][j] != 27 {
+                node._search_board(board, i - 1, j, searched);
             }
-            if i + 1 < m && !visited.contains(&(i + 1, j)) {
-                node._search_board(board, i + 1, j, visited, searched);
+            if i + 1 < m && board[i + 1][j] != 27 {
+                node._search_board(board, i + 1, j, searched);
             }
-            if j > 0 && !visited.contains(&(i, j - 1)) {
-                node._search_board(board, i, j - 1, visited, searched);
+            if j > 0 && board[i][j - 1] != 27 {
+                node._search_board(board, i, j - 1, searched);
             }
-            if j + 1 < n && !visited.contains(&(i, j + 1)) {
-                node._search_board(board, i, j + 1, visited, searched);
+            if j + 1 < n && board[i][j + 1] != 27 {
+                node._search_board(board, i, j + 1, searched);
             }
-            visited.remove(&(i, j));
         }
+        board[i][j] = byte;
     }
 }
 
 // biild form board, search with words
 impl Trie {
     fn add_from_board(&mut self, board: &[Vec<char>]) {
-        let board: Vec<Vec<_>> = board
+        let mut board: Vec<Vec<_>> = board
             .iter()
             .map(|r| r.iter().map(|&c| (c as u8 - b'a') as usize).collect())
             .collect();
         let (m, n) = (board.len(), board[0].len());
         for i in 0..m {
             for j in 0..n {
-                self._add_from_board(&board, i, j, &mut HashSet::new());
+                self._add_from_board(&mut board, i, j);
             }
         }
     }
 
-    fn _add_from_board(
-        &mut self,
-        board: &[Vec<usize>],
-        i: usize,
-        j: usize,
-        visited: &mut HashSet<(usize, usize)>,
-    ) {
-        visited.insert((i, j));
+    fn _add_from_board(&mut self, board: &mut [Vec<usize>], i: usize, j: usize) {
+        let byte = board[i][j];
+        board[i][j] = 27;
         let (m, n) = (board.len(), board[0].len());
-        let node = self.children[board[i][j]].get_or_insert(Default::default());
-        if i > 0 && !visited.contains(&(i - 1, j)) {
-            node._add_from_board(board, i - 1, j, visited)
+        let node = self.children[byte].get_or_insert(Default::default());
+        if i > 0 && board[i - 1][j] != 27 {
+            node._add_from_board(board, i - 1, j)
         }
-        if i + 1 < m && !visited.contains(&(i + 1, j)) {
-            node._add_from_board(board, i + 1, j, visited)
+        if i + 1 < m && board[i + 1][j] != 27 {
+            node._add_from_board(board, i + 1, j)
         }
-        if j > 0 && !visited.contains(&(i, j - 1)) {
-            node._add_from_board(board, i, j - 1, visited)
+        if j > 0 && board[i][j - 1] != 27 {
+            node._add_from_board(board, i, j - 1)
         }
-        if j + 1 < n && !visited.contains(&(i, j + 1)) {
-            node._add_from_board(board, i, j + 1, visited)
+        if j + 1 < n && board[i][j + 1] != 27 {
+            node._add_from_board(board, i, j + 1)
         }
-        visited.remove(&(i, j));
+        board[i][j] = byte;
     }
 
     fn search_word(&self, word: &str) -> bool {
@@ -139,6 +132,7 @@ impl Trie {
 #[cfg(test)]
 mod tests_212 {
     use super::*;
+    use std::collections::HashSet;
 
     #[test]
     fn it_works() {
