@@ -7,24 +7,27 @@ class Solution:
         trie = Trie()
         for w in words:
             trie.add(w)
-        return trie.search_board(board)
+        print(trie.children)
+        r = trie.search_board(board)
+        print(trie.children)
+        return r
 
 
 class Trie:
     word: Optional[str]
-    chidren: List[Optional["Trie"]]
+    children: List[Optional["Trie"]]
 
     def __init__(self) -> None:
         self.word = None
-        self.chidren = [None] * 26
+        self.children = [None] * 26
         pass
 
     def add(self, word: str):
         node: Trie = self
         for c in (ord(c) - ord("a") for c in word):
-            if node.chidren[c] is None:
-                node.chidren[c] = Trie()
-            node = node.chidren[c]  # type: ignore
+            if node.children[c] is None:
+                node.children[c] = Trie()
+            node = node.children[c]  # type: ignore
         node.word = word
 
     def search_board(self, board: List[List[str]]) -> List[str]:
@@ -42,7 +45,7 @@ class Trie:
         c = board[i][j]
         board[i][j] = "#"
         index = ord(c) - ord("a")
-        node = self.chidren[index]
+        node = self.children[index]
         if node is not None:
             if node.word is not None:
                 searched.append(node.word)
@@ -51,6 +54,8 @@ class Trie:
                 if 0 <= x < m and 0 <= y < n and board[x][y] != "#":
                     node._search_board(board, x, y, searched)
 
+            if all([child is None for child in node.children]):
+                self.children[index] = None
         board[i][j] = c
 
 
