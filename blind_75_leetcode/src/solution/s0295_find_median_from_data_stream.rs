@@ -5,11 +5,12 @@ impl Solution {
     // This is a template
 }
 
-use std::collections::BinaryHeap;
+use std::{cmp::Reverse, collections::BinaryHeap};
 
 #[derive(Default)]
 struct MedianFinder {
-    heap: BinaryHeap<i32>,
+    left_heap: BinaryHeap<i32>,           // with max heap
+    right_heap: BinaryHeap<Reverse<i32>>, // with min heap
 }
 
 impl MedianFinder {
@@ -18,25 +19,27 @@ impl MedianFinder {
     }
 
     fn add_num(&mut self, num: i32) {
-        self.heap.push(num);
+        if self.left_heap.is_empty() || self.left_heap.peek().unwrap() >= &num {
+            self.left_heap.push(num);
+            if self.left_heap.len() > self.right_heap.len() + 1 {
+                let val = self.left_heap.pop().unwrap();
+                self.right_heap.push(Reverse(val));
+            }
+        } else {
+            self.right_heap.push(Reverse(num));
+            if self.right_heap.len() > self.left_heap.len() {
+                let Reverse(val) = self.right_heap.pop().unwrap();
+                self.left_heap.push(val);
+            }
+        }
     }
 
     fn find_median(&mut self) -> f64 {
-        let l = self.heap.len();
-        let mut temp = Vec::with_capacity(l / 2 + 1);
-        for _ in 0..l / 2 {
-            temp.push(self.heap.pop().unwrap());
-        }
-        let result = if l % 2 == 0 {
-            (self.heap.peek().unwrap() + temp.last().unwrap()) as f64 / 2.0f64
+        if self.left_heap.len() > self.right_heap.len() {
+            *self.left_heap.peek().unwrap() as f64
         } else {
-            *self.heap.peek().unwrap() as f64
-        };
-        for num in temp.into_iter().rev() {
-            self.heap.push(num);
+            (self.left_heap.peek().unwrap() + self.right_heap.peek().unwrap().0) as f64 / 2.0
         }
-
-        result
     }
 }
 
