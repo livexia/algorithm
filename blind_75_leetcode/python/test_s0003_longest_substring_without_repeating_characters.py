@@ -5,7 +5,7 @@ class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         left = result = 0
         n = len(s)
-        for (right, c) in enumerate(s):
+        for right, c in enumerate(s):
             if left + result >= n:
                 return result
             if c in s[left:right]:

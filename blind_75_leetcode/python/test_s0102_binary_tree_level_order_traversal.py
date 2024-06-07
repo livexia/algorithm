@@ -1,7 +1,7 @@
 import unittest
 from typing import Optional, List
 
-from .s0104_maximum_depth_of_binary_tree import TreeNode, create_tree_from_list
+from .test_s0104_maximum_depth_of_binary_tree import TreeNode, create_tree_from_list
 
 from collections import deque
 

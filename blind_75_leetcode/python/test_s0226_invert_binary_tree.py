@@ -2,7 +2,7 @@ import unittest
 from typing import Optional
 
 
-from .s0104_maximum_depth_of_binary_tree import create_tree_from_list, TreeNode
+from .test_s0104_maximum_depth_of_binary_tree import create_tree_from_list, TreeNode
 
 
 class Solution:

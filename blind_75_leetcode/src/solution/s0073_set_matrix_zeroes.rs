@@ -2,7 +2,7 @@
 pub struct Solution {}
 
 impl Solution {
-    pub fn set_zeroes(matrix: &mut Vec<Vec<i32>>) {
+    pub fn set_zeroes(matrix: &mut [Vec<i32>]) {
         let m = matrix.len();
         let n = matrix[0].len();
         let mut flag_row = false;
@@ -40,7 +40,7 @@ impl Solution {
         }
     }
 
-    pub fn set_zeroes_with_one_var(matrix: &mut Vec<Vec<i32>>) {
+    pub fn set_zeroes_with_one_var(matrix: &mut [Vec<i32>]) {
         let m = matrix.len();
         let n = matrix[0].len();
         let mut flag_col = false;

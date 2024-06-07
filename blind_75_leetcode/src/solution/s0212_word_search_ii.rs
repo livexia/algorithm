@@ -25,7 +25,7 @@ impl Trie {
 // build from words, search with board
 impl Trie {
     fn add_word(&mut self, word: &str) {
-        let mut node = word
+        let node = word
             .bytes()
             .map(|c| (c - b'a') as usize)
             .fold(self, |node, b| {

@@ -38,7 +38,7 @@ fn create_file_for_solution(lang: &str, id: &str, name: &str) -> Result<()> {
         )
     } else if lang == "python" {
         (
-            format!("./python/s{:0>4}_{}.py", id, name),
+            format!("./python/test_s{:0>4}_{}.py", id, name),
             false,
             "./template.py",
         )
@@ -83,7 +83,6 @@ fn write_template_code(code: &str, path: &Path) -> Result<()> {
 fn insert_mod(mod_name: &str) -> Result<()> {
     let mod_name = format!("mod {};", mod_name);
     let mut mod_file = match fs::OpenOptions::new()
-        .write(true)
         .append(true)
         .open("./src/solution/mod.rs")
     {
