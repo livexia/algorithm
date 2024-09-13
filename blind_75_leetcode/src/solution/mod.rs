@@ -76,3 +76,5 @@ mod s0212_word_search_ii;
 mod s0347_top_k_frequent_elements;
 mod s0295_find_median_from_data_stream;
 mod s0154_find_minimum_in_rotated_sorted_array_ii;
+mod s0622_design_circular_queue;
+mod s0034_find_first_and_last_position_of_element_in_sorted_array;
